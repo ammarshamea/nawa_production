@@ -7,10 +7,24 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { services, servicesIntro } from "@/lib/content";
 import { assetPath } from "@/lib/assetPath";
 import { Reveal } from "@/components/motion/Reveal";
-import { SectionWatermark } from "@/components/SectionWatermark";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
+}
+
+function waitForImages(container: HTMLElement) {
+  const imgs = container.querySelectorAll("img");
+  return Promise.all(
+    Array.from(imgs).map(
+      (img) =>
+        img.complete
+          ? Promise.resolve()
+          : new Promise<void>((resolve) => {
+              img.addEventListener("load", () => resolve(), { once: true });
+              img.addEventListener("error", () => resolve(), { once: true });
+            })
+    )
+  );
 }
 
 export function ServicesChapters() {
@@ -19,50 +33,66 @@ export function ServicesChapters() {
 
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const mm = window.matchMedia("(min-width: 1024px)");
-    if (reduce || !mm.matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const ctx = gsap.context(() => {
-      if (!trackRef.current || !panelsRef.current) return;
+    const track = trackRef.current;
+    const panels = panelsRef.current;
+    if (!track || !panels) return;
 
-      const strips = panelsRef.current;
+    const mm = gsap.matchMedia();
 
-      const scrollDistance = () =>
-        Math.max(0, strips.scrollWidth - window.innerWidth);
+    mm.add("(min-width: 1024px)", () => {
+      let ctx: gsap.Context | undefined;
+      let cancelled = false;
 
-      gsap.to(strips, {
-        x: () => -scrollDistance(),
-        ease: "none",
-        scrollTrigger: {
-          trigger: trackRef.current,
-          start: "top top",
-          end: () => "+=" + scrollDistance(),
-          scrub: 1,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
+      const build = () => {
+        ctx?.revert();
+        ctx = gsap.context(() => {
+          const scrollDistance = () =>
+            Math.max(0, panels.scrollWidth - window.innerWidth);
+
+          gsap.to(panels, {
+            x: () => -scrollDistance(),
+            ease: "none",
+            scrollTrigger: {
+              trigger: track,
+              start: "top top",
+              end: () => "+=" + scrollDistance(),
+              scrub: 1,
+              pin: true,
+              anticipatePin: 1,
+              invalidateOnRefresh: true,
+            },
+          });
+        }, track);
+        ScrollTrigger.refresh();
+      };
+
+      waitForImages(panels).then(() => {
+        if (cancelled) return;
+        requestAnimationFrame(() => {
+          if (cancelled) return;
+          build();
+        });
       });
-    }, trackRef);
 
-    const bumpMeasurements = () => ScrollTrigger.refresh();
-    window.addEventListener("resize", bumpMeasurements);
-    if (document.readyState === "complete") bumpMeasurements();
-    else window.addEventListener("load", bumpMeasurements);
+      const onResize = () => ScrollTrigger.refresh();
+      window.addEventListener("resize", onResize);
+      window.addEventListener("load", onResize);
 
-    requestAnimationFrame(bumpMeasurements);
+      return () => {
+        cancelled = true;
+        window.removeEventListener("resize", onResize);
+        window.removeEventListener("load", onResize);
+        ctx?.revert();
+      };
+    });
 
-    return () => {
-      window.removeEventListener("resize", bumpMeasurements);
-      window.removeEventListener("load", bumpMeasurements);
-      ctx.revert();
-    };
+    return () => mm.revert();
   }, []);
 
   return (
-    <section id="services" className="relative overflow-hidden bg-ink">
-      <SectionWatermark position="center" />
+    <section id="services" className="relative bg-ink">
       <div className="relative z-10 mx-auto max-w-7xl px-5 py-20 sm:px-6 md:py-44">
         <Reveal>
           <p className="text-xs uppercase tracking-[0.32em] text-gold-200/80">Services</p>
@@ -79,12 +109,9 @@ export function ServicesChapters() {
         </Reveal>
       </div>
 
-      <div ref={trackRef} className="relative z-10 overflow-hidden lg:h-[100svh]">
-        <div
-          ref={panelsRef}
-          className="flex flex-col lg:h-full lg:w-[500vw] lg:flex-row"
-        >
-          {services.map((s) => (
+      <div ref={trackRef} className="relative z-10 lg:h-[100svh]">
+        <div ref={panelsRef} className="flex flex-col lg:h-full lg:flex-row">
+          {services.map((s, i) => (
             <article
               key={s.title}
               className="service-panel relative flex min-h-[80svh] w-full shrink-0 items-end overflow-hidden lg:min-h-0 lg:h-full lg:w-screen"
@@ -94,6 +121,7 @@ export function ServicesChapters() {
                   src={assetPath(s.image)}
                   alt=""
                   fill
+                  priority={i === 0}
                   className="object-cover object-center"
                   sizes="100vw"
                 />
