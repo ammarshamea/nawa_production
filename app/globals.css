@@ -1,0 +1,42 @@
+@import "lenis/dist/lenis.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    @apply bg-ink text-white antialiased;
+    font-feature-settings: "ss01" on, "kern" on;
+  }
+
+  ::selection {
+    background-color: rgba(221, 181, 90, 0.35);
+    color: #fff;
+  }
+}
+
+@layer utilities {
+  .text-white\/8 {
+    color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
