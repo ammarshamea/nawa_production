@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:pages": "cross-env GITHUB_PAGES=true CUSTOM_DOMAIN=true next build",
+    "build:pages": "cross-env GITHUB_PAGES=true next build",
     "start": "next start",
     "lint": "next lint"
   },

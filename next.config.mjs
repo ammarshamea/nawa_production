@@ -1,16 +1,13 @@
 /** @type {import('next').NextConfig} */
 const isGithubPages = process.env.GITHUB_PAGES === "true";
-const customDomain = process.env.CUSTOM_DOMAIN === "true";
-const repoBasePath = isGithubPages && !customDomain ? "/nawa_production" : "";
 
 const nextConfig = {
   reactStrictMode: true,
   ...(isGithubPages
     ? {
         output: "export",
-        ...(repoBasePath
-          ? { basePath: repoBasePath, assetPrefix: `${repoBasePath}/` }
-          : {}),
+        basePath: "/nawa_production",
+        assetPrefix: "/nawa_production/",
         trailingSlash: true,
       }
     : {}),
