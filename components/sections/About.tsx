@@ -55,7 +55,11 @@ export function About() {
 
         <div className="lg:col-span-7 lg:col-start-6">
           <Reveal delay={0.1}>
-            <p className="text-lg leading-[1.7] text-white/80 md:text-xl">{about.body}</p>
+            <div className="space-y-6 text-lg leading-[1.7] text-white/80 md:text-xl">
+              {about.body.split("\n\n").map((paragraph) => (
+                <p key={paragraph.slice(0, 32)}>{paragraph}</p>
+              ))}
+            </div>
           </Reveal>
 
           <div className="mt-12 grid grid-cols-2 gap-8 text-white/70 md:grid-cols-3">

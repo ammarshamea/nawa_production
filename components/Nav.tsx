@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { nav } from "@/lib/content";
-import { assetPath } from "@/lib/assetPath";
+import { assetPath, sectionHref } from "@/lib/assetPath";
 
 export function Nav() {
   const [open, setOpen] = useState(false);
@@ -42,7 +42,7 @@ export function Nav() {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-6 sm:py-5 md:py-6">
-        <a href="#home" className="flex items-center gap-3" aria-label="Nawa Production home">
+        <a href={sectionHref("#home")} className="flex items-center gap-3" aria-label="Nawa Production home">
           <Image
             src={assetPath("/assets/brand/logo-nawa-gold.png")}
             alt="Nawa Production"
@@ -57,7 +57,7 @@ export function Nav() {
           {nav.map((item) => (
             <a
               key={item.id}
-              href={`#${item.id}`}
+              href={sectionHref(`#${item.id}`)}
               className={`group relative text-xs uppercase tracking-[0.22em] transition-colors ${
                 active === item.id ? "text-gold-200" : "text-white/70 hover:text-white"
               }`}
@@ -73,7 +73,7 @@ export function Nav() {
         </nav>
 
         <a
-          href="#contact"
+          href={sectionHref("#contact")}
           className="hidden rounded-full border border-gold-300/40 px-5 py-2 text-xs uppercase tracking-[0.22em] text-gold-100 transition-colors hover:border-gold-200 hover:text-gold-50 lg:inline-flex"
         >
           Let&apos;s Talk
@@ -128,7 +128,7 @@ export function Nav() {
                     className="border-b border-white/5 last:border-0"
                   >
                     <a
-                      href={`#${item.id}`}
+                      href={sectionHref(`#${item.id}`)}
                       onClick={() => setOpen(false)}
                       className={`flex items-center justify-between px-6 py-4 text-sm uppercase tracking-[0.22em] transition-colors active:bg-white/5 ${
                         active === item.id ? "text-gold-200" : "text-white/75"
@@ -144,7 +144,7 @@ export function Nav() {
               </ul>
               <div className="border-t border-white/5 p-4">
                 <a
-                  href="#contact"
+                  href={sectionHref("#contact")}
                   onClick={() => setOpen(false)}
                   className="flex w-full items-center justify-center rounded-full bg-gold-300/10 py-3.5 text-xs uppercase tracking-[0.22em] text-gold-200 transition-colors active:bg-gold-300/20"
                 >

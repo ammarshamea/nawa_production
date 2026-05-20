@@ -46,7 +46,7 @@ export const hero = {
 
 export const about = {
   title: "About Nawa",
-  body: "Nawa Production is a Saudi Production house built on a foundation of lived storytelling, bold vision, and relentless craft. Founded by a producer with over six years of experience spanning major festivals, international streaming platforms, and iconic Saudi brands — Nawa exists to shape the next chapter of Arabic content.",
+  body: "Nawa Production is a Saudi production house where lived storytelling meets uncompromising craft. We work at the intersection of culture, cinema, and technology — partnering with brands, artists, and platforms to create work that doesn't just get watched, but remembered.\n\nFrom major festivals to international streaming, from iconic Saudi campaigns to AI-driven creative pipelines, Nawa exists to shape the next chapter of Arabic content — one frame at a time.",
 };
 
 export const vision = {
@@ -184,12 +184,26 @@ export const clients = {
   title: "Who We've Worked With",
   body: "Our work has reached audiences through some of the most respected brands and platforms in the region:",
   list: [
-    "Social Development Bank",
-    "Greenwich",
-    "Alrajhi Bank",
-    "Babyshop",
-    "Barns",
-    "MDL Beast",
+    {
+      name: "Al Rajhi Bank",
+      driveId: "1ItKzG8SJYLf0G-Sg1nRmKikd4rqmnVpb",
+    },
+    {
+      name: "Babyshop",
+      driveId: "1yiryQuGQY-aJWmZDYBsLvcnm3qav5I-K",
+    },
+    {
+      name: "Social Development Bank",
+      driveId: "1o_RvCqx5KbBxstl8ljymT5nFwjy6oM4p",
+    },
+    {
+      name: "MDL Beast",
+      driveId: "1yskdGk7envR_8IyzL0Bu_tlHFQtf9G8r",
+    },
+    {
+      name: "Barn's",
+      logo: "/assets/photos/Barns_logo.jpeg",
+    },
   ],
 };
 

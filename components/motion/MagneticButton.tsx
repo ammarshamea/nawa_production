@@ -3,6 +3,7 @@
 import { motion, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { useRef, type ReactNode, type MouseEvent } from "react";
+import { sectionHref } from "@/lib/assetPath";
 
 type Props = {
   href: string;
@@ -40,10 +41,15 @@ export function MagneticButton({ href, children, variant = "primary", className 
       ? "bg-gold-300 text-ink hover:bg-gold-200 shadow-gold"
       : "border border-gold-300/40 text-gold-100 hover:border-gold-200 hover:text-gold-50";
 
+  const resolvedHref =
+    href.startsWith("#") || (href.startsWith("/") && href.includes("#"))
+      ? sectionHref(href.includes("#") ? href.slice(href.indexOf("#")) : href)
+      : href;
+
   return (
     <motion.a
       ref={ref}
-      href={href}
+      href={resolvedHref}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
       style={{ x: sx, y: sy }}
