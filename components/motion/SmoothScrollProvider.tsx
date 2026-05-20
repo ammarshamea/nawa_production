@@ -35,28 +35,7 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
     gsap.ticker.lagSmoothing(0);
     lenis.on("scroll", ScrollTrigger.update);
 
-    ScrollTrigger.scrollerProxy(document.documentElement, {
-      scrollTop(value?: number) {
-        if (arguments.length && value !== undefined) {
-          lenis.scrollTo(value, { immediate: true });
-        }
-        return lenis.scroll;
-      },
-      getBoundingClientRect() {
-        return {
-          top: 0,
-          left: 0,
-          width: window.innerWidth,
-          height: window.innerHeight,
-        };
-      },
-      pinType: document.documentElement.style.transform ? "transform" : "fixed",
-    });
-
-    const onResize = () => {
-      lenis.resize();
-      ScrollTrigger.refresh();
-    };
+    const onResize = () => lenis.resize();
     window.addEventListener("resize", onResize);
 
     ScrollTrigger.refresh();
