@@ -1,11 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  driveThumbnailProxyUrl,
-  driveThumbnailUrls,
-  driveVideoStreamUrl,
-} from "@/lib/drive";
+import { driveThumbnailUrls, driveVideoStreamUrl } from "@/lib/drive";
 
 type Props = {
   driveId: string;
@@ -92,10 +88,7 @@ function useVideoFirstFrame(driveId: string, enabled: boolean) {
 }
 
 export function ProjectThumbnail({ driveId, title, priority }: Props) {
-  const sources = [
-    driveThumbnailProxyUrl(driveId),
-    ...driveThumbnailUrls(driveId),
-  ];
+  const sources = driveThumbnailUrls(driveId);
 
   const [srcIndex, setSrcIndex] = useState(0);
   const [exhausted, setExhausted] = useState(false);

@@ -14,11 +14,6 @@ export function driveThumbnailUrls(driveId: string): string[] {
   ];
 }
 
-/** Proxied through our API (avoids hotlink / CORS issues in the browser) */
-export function driveThumbnailProxyUrl(driveId: string) {
-  return `/api/drive-thumbnail?id=${encodeURIComponent(driveId)}`;
-}
-
 /** Direct download / stream URL (works when file is link-shared) */
 export function driveVideoStreamUrl(driveId: string) {
   return `https://drive.google.com/uc?export=download&id=${driveId}`;
