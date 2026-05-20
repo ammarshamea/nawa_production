@@ -4,6 +4,7 @@ import { SmoothScrollProvider } from "@/components/motion/SmoothScrollProvider";
 import { Nav } from "@/components/Nav";
 import { Preloader } from "@/components/Preloader";
 import { brand } from "@/lib/content";
+import { assetPath } from "@/lib/assetPath";
 import "./globals.css";
 
 const display = Cormorant_Garamond({
@@ -39,6 +40,10 @@ export const metadata: Metadata = {
     title: `${brand.name} — ${brand.tagline}`,
     description:
       "Saudi production house. Film, commercials, live events, post production, and AI-powered creative.",
+  },
+  icons: {
+    icon: assetPath("/assets/brand/logo-nawa-gold.png"),
+    apple: assetPath("/assets/brand/logo-nawa-gold.png"),
   },
 };
 

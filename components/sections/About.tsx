@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { about } from "@/lib/content";
+import { assetPath } from "@/lib/assetPath";
 import { Reveal } from "@/components/motion/Reveal";
 import { SectionWatermark } from "@/components/SectionWatermark";
 
@@ -24,7 +25,7 @@ export function About() {
       <SectionWatermark position="right" />
       <motion.div style={{ y }} className="absolute inset-0 -z-10">
         <Image
-          src="/assets/photos/about-saudi-horizon.png"
+          src={assetPath("/assets/photos/about-saudi-horizon.png")}
           alt=""
           fill
           className="object-cover object-center opacity-25"

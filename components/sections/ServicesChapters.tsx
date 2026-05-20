@@ -5,6 +5,7 @@ import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { services, servicesIntro } from "@/lib/content";
+import { assetPath } from "@/lib/assetPath";
 import { Reveal } from "@/components/motion/Reveal";
 import { SectionWatermark } from "@/components/SectionWatermark";
 
@@ -90,7 +91,7 @@ export function ServicesChapters() {
             >
               <div className="absolute inset-0 -z-10">
                 <Image
-                  src={s.image}
+                  src={assetPath(s.image)}
                   alt=""
                   fill
                   className="object-cover object-center"

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { brand, contact } from "@/lib/content";
+import { assetPath } from "@/lib/assetPath";
 import { Reveal } from "@/components/motion/Reveal";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { SectionWatermark } from "@/components/SectionWatermark";
@@ -74,7 +75,7 @@ export function Contact() {
         <Reveal delay={0.3}>
           <div className="mt-14 flex flex-col items-center gap-6">
             <Image
-              src="/assets/brand/logo-nawa-gold.png"
+              src={assetPath("/assets/brand/logo-nawa-gold.png")}
               alt="Nawa Production"
               width={140}
               height={70}

@@ -1,13 +1,17 @@
 /** @type {import('next').NextConfig} */
 const isGithubPages = process.env.GITHUB_PAGES === "true";
+const githubBasePath = isGithubPages ? "/nawa_production" : "";
 
 const nextConfig = {
   reactStrictMode: true,
+  env: {
+    NEXT_PUBLIC_BASE_PATH: githubBasePath,
+  },
   ...(isGithubPages
     ? {
         output: "export",
-        basePath: "/nawa_production",
-        assetPrefix: "/nawa_production/",
+        basePath: githubBasePath,
+        assetPrefix: `${githubBasePath}/`,
         trailingSlash: true,
       }
     : {}),

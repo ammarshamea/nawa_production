@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { hero } from "@/lib/content";
+import { assetPath } from "@/lib/assetPath";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { SectionWatermark } from "@/components/SectionWatermark";
 
@@ -19,7 +20,7 @@ export function Hero() {
       <SectionWatermark position="center" />
       <div className="absolute inset-0 -z-10">
         <Image
-          src="/assets/photos/hero-production-set.png"
+          src={assetPath("/assets/photos/hero-production-set.png")}
           alt=""
           fill
           priority

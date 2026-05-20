@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { assetPath } from "@/lib/assetPath";
 
 type Position = "center" | "right" | "left";
 
@@ -21,7 +22,7 @@ export function SectionWatermark({ position = "center", className = "" }: Props)
       aria-hidden
     >
       <Image
-        src="/assets/brand/logo-nawa-gold.png"
+        src={assetPath("/assets/brand/logo-nawa-gold.png")}
         alt=""
         width={800}
         height={428}

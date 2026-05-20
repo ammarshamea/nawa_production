@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { assetPath } from "@/lib/assetPath";
 
 export function Preloader() {
   const reduce = useReducedMotion();
@@ -36,7 +37,7 @@ export function Preloader() {
             className="relative"
           >
             <Image
-              src="/assets/brand/logo-nawa-gold.png"
+              src={assetPath("/assets/brand/logo-nawa-gold.png")}
               alt=""
               width={220}
               height={110}

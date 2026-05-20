@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { nav } from "@/lib/content";
+import { assetPath } from "@/lib/assetPath";
 
 export function Nav() {
   const [open, setOpen] = useState(false);
@@ -43,7 +44,7 @@ export function Nav() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-6 sm:py-5 md:py-6">
         <a href="#home" className="flex items-center gap-3" aria-label="Nawa Production home">
           <Image
-            src="/assets/brand/logo-nawa-gold.png"
+            src={assetPath("/assets/brand/logo-nawa-gold.png")}
             alt="Nawa Production"
             width={120}
             height={48}
