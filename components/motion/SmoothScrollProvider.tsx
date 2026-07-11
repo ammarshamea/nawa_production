@@ -10,11 +10,25 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+function resetScrollPosition(lenis?: Lenis | null) {
+  window.scrollTo(0, 0);
+  lenis?.scrollTo(0, { immediate: true });
+}
+
 /** Lenis.raf expects DOM timestamp in milliseconds; GSAP ticker passes elapsed time in seconds. */
 export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+    resetScrollPosition();
+
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     if (reduce) {
+      requestAnimationFrame(() => resetScrollPosition());
       return;
     }
 
@@ -22,12 +36,14 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
       duration: 1.25,
       easing: (t) => 1 - Math.pow(1 - t, 3),
       wheelMultiplier: 1,
-      touchMultiplier: 1.2,
+      touchMultiplier: 1.35,
       smoothWheel: true,
-      anchors: true,
+      syncTouch: true,
+      anchors: false,
     });
 
-    /** Drive Lenis from the same ticker as GSAP so ScrollTrigger and smooth scroll stay in sync. */
+    resetScrollPosition(lenis);
+
     function onGsapTick(time: number) {
       lenis.raf(time * 1000);
     }
@@ -58,15 +74,18 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
     window.addEventListener("resize", onResize);
     document.addEventListener("click", onAnchorClick);
 
-    ScrollTrigger.refresh();
+    const stabilizeScroll = () => {
+      resetScrollPosition(lenis);
+      ScrollTrigger.refresh();
+      requestAnimationFrame(() => resetScrollPosition(lenis));
+    };
 
-    const initialHash = window.location.hash;
-    if (initialHash) {
-      requestAnimationFrame(() => scrollToSection(initialHash, lenis));
-    }
+    stabilizeScroll();
+    window.addEventListener("load", stabilizeScroll);
 
     return () => {
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("load", stabilizeScroll);
       document.removeEventListener("click", onAnchorClick);
       gsap.ticker.remove(onGsapTick);
       lenis.destroy();

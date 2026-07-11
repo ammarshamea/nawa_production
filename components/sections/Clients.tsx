@@ -12,10 +12,12 @@ function ClientLogo({
   name,
   driveId,
   logo,
+  fit = "cover",
 }: {
   name: string;
   driveId?: string;
   logo?: string;
+  fit?: "cover" | "contain";
 }) {
   const sources = logo
     ? [assetPath(logo)]
@@ -47,7 +49,9 @@ function ClientLogo({
           setFailed(true);
         }
       }}
-      className="absolute inset-0 size-full object-cover object-center opacity-85 brightness-110 contrast-125 transition-all duration-500 group-hover:scale-[1.03] group-hover:opacity-100"
+      className={`absolute inset-0 size-full object-center opacity-85 brightness-110 contrast-125 transition-all duration-500 group-hover:scale-[1.03] group-hover:opacity-100 object-contain p-3 sm:p-4 ${
+        fit === "cover" ? "md:object-cover md:p-0" : ""
+      }`}
     />
   );
 }
@@ -60,7 +64,7 @@ export function Clients() {
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
           <div>
             <Reveal>
-              <p className="text-xs uppercase tracking-[0.32em] text-gold-200/80">Partners</p>
+              <p className="text-xs uppercase tracking-[0.32em] text-gold-200/80">Our Clients</p>
             </Reveal>
             <Reveal delay={0.05}>
               <h2 className="mt-5 max-w-2xl font-display text-4xl leading-[1] text-white sm:text-5xl md:text-6xl">
@@ -87,7 +91,12 @@ export function Clients() {
                   : ""
               }`}
             >
-              <ClientLogo name={client.name} driveId={client.driveId} logo={client.logo} />
+              <ClientLogo
+                name={client.name}
+                driveId={client.driveId}
+                logo={client.logo}
+                fit={client.fit ?? "cover"}
+              />
               <span className="pointer-events-none absolute inset-x-4 bottom-3 h-px origin-left scale-x-0 bg-gradient-to-r from-gold-300 via-gold-200 to-transparent transition-transform duration-500 group-hover:scale-x-100 sm:inset-x-5 sm:bottom-4" />
             </motion.li>
           ))}

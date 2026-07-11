@@ -1,27 +1,23 @@
-import { Hero } from "@/components/sections/Hero";
+import { HeroCinematic } from "@/components/cinematic/HeroCinematic";
 import { About } from "@/components/sections/About";
 import { VisionMission } from "@/components/sections/VisionMission";
-import { Values } from "@/components/sections/Values";
-import { ServicesChapters } from "@/components/sections/ServicesChapters";
-import { AiSection } from "@/components/sections/AiSection";
-import { ProcessTimeline } from "@/components/sections/ProcessTimeline";
-import { Projects } from "@/components/sections/Projects";
+import { ProductionJourney } from "@/components/cinematic/ProductionJourney";
+import { ServicesCinematic } from "@/components/cinematic/ServicesCinematic";
+import { WorkSection } from "@/components/cinematic/WorkSection";
 import { Clients } from "@/components/sections/Clients";
-import { Contact } from "@/components/sections/Contact";
+import { ContactStudio } from "@/components/cinematic/ContactStudio";
 
 export default function Page() {
   return (
     <main className="relative">
-      <Hero />
+      <HeroCinematic />
       <About />
       <VisionMission />
-      <Values />
-      <ServicesChapters />
-      <AiSection />
-      <ProcessTimeline />
-      <Projects />
+      <ProductionJourney />
+      <ServicesCinematic />
+      <WorkSection />
       <Clients />
-      <Contact />
+      <ContactStudio />
     </main>
   );
 }

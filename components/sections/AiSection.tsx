@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { ai } from "@/lib/content";
+import { siteImages } from "@/lib/assets";
 import { assetPath } from "@/lib/assetPath";
 import { Reveal } from "@/components/motion/Reveal";
 import { SectionWatermark } from "@/components/SectionWatermark";
@@ -25,7 +26,7 @@ export function AiSection() {
       <SectionWatermark position="right" />
       <motion.div style={{ y }} className="absolute inset-0 -z-10">
         <Image
-          src={assetPath("/assets/photos/ai-frontier-stage.png")}
+          src={assetPath(siteImages.journey.aiProduction)}
           alt=""
           fill
           className="object-cover object-center opacity-40"

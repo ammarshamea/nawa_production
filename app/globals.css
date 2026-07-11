@@ -7,6 +7,21 @@
 @layer base {
   :root {
     color-scheme: dark;
+
+    --color-purple-deep: #380638;
+    --color-purple-black: #1a061a;
+    --color-gold: #d49b64;
+    --color-gold-soft: #e8b88a;
+    --color-black: #050505;
+    --color-black-soft: #0a0a0a;
+    --color-white: #f5f1ea;
+    --color-muted: rgba(245, 241, 234, 0.65);
+
+    --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+    --duration-micro: 200ms;
+    --duration-ui: 400ms;
+    --duration-scene: 800ms;
+    --duration-cinematic: 1400ms;
   }
 
   html {
@@ -14,19 +29,66 @@
   }
 
   body {
-    @apply bg-ink text-white antialiased;
+    @apply overflow-x-hidden bg-ink text-studio-white antialiased;
     font-feature-settings: "ss01" on, "kern" on;
   }
 
   ::selection {
-    background-color: rgba(221, 181, 90, 0.35);
-    color: #fff;
+    background-color: rgba(212, 155, 100, 0.35);
+    color: #f5f1ea;
   }
 }
 
 @layer utilities {
   .text-white\/8 {
     color: rgba(255, 255, 255, 0.08);
+  }
+
+  .film-grain {
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.35;
+    mix-blend-mode: overlay;
+  }
+
+  .journey-snap-container {
+    scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .journey-snap-item {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .journey-vignette {
+    background: radial-gradient(
+      ellipse 85% 75% at 50% 50%,
+      transparent 35%,
+      rgba(5, 5, 5, 0.55) 100%
+    );
+  }
+
+  .journey-letterbox {
+    box-shadow: 0 0 80px 40px rgba(0, 0, 0, 0.9);
+  }
+
+  @keyframes light-sweep-once {
+    0% {
+      transform: translateX(-120%);
+      opacity: 0;
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(120%);
+      opacity: 0;
+    }
+  }
+
+  .light-sweep-active > div {
+    animation: light-sweep-once 1.4s var(--ease-cinematic) forwards;
   }
 }
 
@@ -38,5 +100,9 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .journey-snap-container {
+    scroll-snap-type: none;
   }
 }

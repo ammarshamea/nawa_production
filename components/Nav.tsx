@@ -37,7 +37,7 @@ export function Nav() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 pt-[env(safe-area-inset-top,0px)] ${
         scrolled ? "bg-ink/70 backdrop-blur-xl" : "bg-transparent"
       }`}
     >
@@ -74,7 +74,7 @@ export function Nav() {
 
         <a
           href={sectionHref("#contact")}
-          className="hidden rounded-full border border-gold-300/40 px-5 py-2 text-xs uppercase tracking-[0.22em] text-gold-100 transition-colors hover:border-gold-200 hover:text-gold-50 lg:inline-flex"
+          className="hidden rounded-full border border-gold-300/40 px-5 py-2 text-xs uppercase tracking-[0.22em] text-gold-100 transition-colors hover:border-gold-200 lg:inline-flex"
         >
           Let&apos;s Talk
         </a>
@@ -130,14 +130,11 @@ export function Nav() {
                     <a
                       href={sectionHref(`#${item.id}`)}
                       onClick={() => setOpen(false)}
-                      className={`flex items-center justify-between px-6 py-4 text-sm uppercase tracking-[0.22em] transition-colors active:bg-white/5 ${
+                      className={`block px-6 py-4 text-sm uppercase tracking-[0.22em] transition-colors active:bg-white/5 ${
                         active === item.id ? "text-gold-200" : "text-white/75"
                       }`}
                     >
                       {item.label}
-                      {active === item.id && (
-                        <span className="h-1 w-1 rounded-full bg-gold-300" />
-                      )}
                     </a>
                   </motion.li>
                 ))}

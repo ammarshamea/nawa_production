@@ -1,57 +1,59 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { ValueIcon } from "@/components/icons/ValueIcons";
-import { values } from "@/lib/content";
+import { values, valuesIntro } from "@/lib/content";
+import { siteImages } from "@/lib/assets";
+import { assetPath } from "@/lib/assetPath";
 import { Reveal } from "@/components/motion/Reveal";
-import { SectionWatermark } from "@/components/SectionWatermark";
 
 export function Values() {
   return (
-    <section id="values" className="relative bg-ink py-24 md:py-32 lg:py-44">
-      <SectionWatermark position="center" />
+    <section id="values" className="relative overflow-hidden bg-ink py-24 md:py-32 lg:py-40">
+      <div className="pointer-events-none absolute inset-0">
+        <Image
+          src={assetPath(siteImages.story.values)}
+          alt=""
+          fill
+          className="object-cover object-center opacity-[0.12]"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-ink via-ink/95 to-ink" />
+      </div>
+
       <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-6">
-        <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
-          <div>
-            <Reveal>
-              <p className="text-xs uppercase tracking-[0.32em] text-gold-200/80">Our Values</p>
-            </Reveal>
-            <Reveal delay={0.05}>
-              <h2 className="mt-5 max-w-2xl font-display text-4xl leading-[1] text-white sm:text-5xl md:text-6xl lg:text-7xl">
-                The principles
-                <br />
-                <span className="italic text-gold-200">behind every frame</span>
-              </h2>
-            </Reveal>
-          </div>
-          <Reveal delay={0.15}>
-            <p className="max-w-sm text-sm leading-relaxed text-white/60">
-              Five commitments that shape every collaboration, every brief, and every final cut we deliver.
-            </p>
+        <div className="max-w-2xl">
+          <Reveal>
+            <p className="text-xs uppercase tracking-[0.32em] text-gold-200/80">{valuesIntro.label}</p>
+          </Reveal>
+          <Reveal delay={0.05}>
+            <h2 className="mt-5 font-display text-4xl leading-[1.05] text-white sm:text-5xl md:text-6xl">
+              {valuesIntro.title}
+            </h2>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="mt-5 text-sm leading-relaxed text-white/60 md:text-base">{valuesIntro.body}</p>
           </Reveal>
         </div>
 
-        <ul className="mt-12 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-5">
+        <ol className="mt-14 space-y-0 divide-y divide-white/10 border-y border-white/10">
           {values.map((value, i) => (
             <motion.li
               key={value.title}
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.7, delay: i * 0.08, ease: [0.2, 0.7, 0.2, 1] }}
-              className="group relative flex h-full flex-col rounded-2xl border border-white/10 bg-ink-soft/60 p-6 transition-colors hover:border-gold-300/40"
+              initial={{ opacity: 0, x: -16 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.55, delay: i * 0.06, ease: [0.2, 0.7, 0.2, 1] }}
+              className="group grid gap-4 py-8 md:grid-cols-[5rem_12rem_1fr] md:items-start md:gap-8 md:py-10 lg:grid-cols-[6rem_14rem_1fr]"
             >
-              <span className="mt-0 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-gold-300/40 text-gold-200/90 transition-all duration-500 group-hover:border-gold-300 group-hover:text-gold-100 group-hover:shadow-gold">
-                <span className="transition-transform duration-500 group-hover:scale-110">
-                  <ValueIcon title={value.title} />
-                </span>
+              <span className="font-display text-4xl leading-none text-white/10 transition-colors duration-500 group-hover:text-gold-200/40 md:text-5xl">
+                {value.no}
               </span>
-              <h3 className="mt-8 font-display text-2xl text-white">{value.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-white/65">{value.body}</p>
-              <span className="pointer-events-none absolute inset-x-6 bottom-0 h-px origin-left scale-x-0 bg-gradient-to-r from-gold-300 via-gold-200 to-transparent transition-transform duration-500 group-hover:scale-x-100" />
+              <h3 className="font-display text-2xl text-gold-200 md:text-3xl">{value.title}</h3>
+              <p className="text-sm leading-relaxed text-white/65 md:text-base md:leading-relaxed">{value.body}</p>
             </motion.li>
           ))}
-        </ul>
+        </ol>
       </div>
     </section>
   );

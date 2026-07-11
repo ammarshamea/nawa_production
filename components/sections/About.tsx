@@ -1,79 +1,71 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
 import { about } from "@/lib/content";
+import { siteImages } from "@/lib/assets";
 import { assetPath } from "@/lib/assetPath";
 import { Reveal } from "@/components/motion/Reveal";
 import { SectionWatermark } from "@/components/SectionWatermark";
 
 export function About() {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
-
   return (
-    <section
-      id="about"
-      ref={ref}
-      className="relative overflow-hidden bg-ink-deep py-24 md:py-32 lg:py-44"
-    >
+    <section id="about" className="relative overflow-hidden bg-ink-deep py-24 md:py-32 lg:py-40">
       <SectionWatermark position="right" />
-      <motion.div style={{ y }} className="absolute inset-0 -z-10">
-        <Image
-          src={assetPath("/assets/photos/about-saudi-horizon.png")}
-          alt=""
-          fill
-          className="object-cover object-center opacity-25"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink-deep via-ink-deep/80 to-transparent" />
-      </motion.div>
 
-      <div className="relative z-10 mx-auto grid max-w-7xl gap-10 px-5 sm:px-6 lg:gap-16 lg:grid-cols-12">
-        <div className="lg:col-span-4">
-          <Reveal>
-            <p className="text-xs uppercase tracking-[0.32em] text-gold-200/80">Story</p>
-          </Reveal>
-          <Reveal delay={0.05}>
-            <h2 className="mt-5 font-display text-4xl leading-[1] text-white sm:text-5xl md:text-6xl lg:text-7xl">
-              About
-              <br />
-              <span className="bg-gold-sheen bg-clip-text italic text-transparent">
-                Nawa
-              </span>
-            </h2>
-          </Reveal>
-          <Reveal delay={0.15}>
-            <span className="mt-8 block h-px w-24 bg-gold-300/60" />
-          </Reveal>
-        </div>
+      <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-6">
+        <Reveal>
+          <p className="text-xs uppercase tracking-[0.32em] text-gold-200/80">{about.label}</p>
+        </Reveal>
+        <Reveal delay={0.05}>
+          <h2 className="mt-5 max-w-3xl font-display text-4xl leading-[1] text-white sm:text-5xl md:text-6xl">
+            About
+            <br />
+            <span className="bg-gold-sheen bg-clip-text italic text-transparent">Nawa</span>
+          </h2>
+        </Reveal>
+        <Reveal delay={0.1}>
+          <span className="mt-8 block h-px w-24 bg-gold-300/60" />
+        </Reveal>
 
-        <div className="lg:col-span-7 lg:col-start-6">
-          <Reveal delay={0.1}>
-            <div className="space-y-6 text-lg leading-[1.7] text-white/80 md:text-xl">
-              {about.body.split("\n\n").map((paragraph) => (
-                <p key={paragraph.slice(0, 32)}>{paragraph}</p>
-              ))}
-            </div>
-          </Reveal>
+        <div className="mt-12 grid gap-10 lg:mt-14 lg:grid-cols-12 lg:items-start lg:gap-x-14 lg:gap-y-0">
+          <div className="order-2 lg:order-1 lg:col-span-7">
+            <Reveal delay={0.12}>
+              <div className="space-y-6 text-base leading-[1.75] text-white/80 md:text-lg">
+                {about.body.split("\n\n").map((paragraph) => (
+                  <p key={paragraph.slice(0, 32)}>{paragraph}</p>
+                ))}
+              </div>
+            </Reveal>
 
-          <div className="mt-12 grid grid-cols-2 gap-8 text-white/70 md:grid-cols-3">
             <Reveal delay={0.2}>
-              <p className="text-xs uppercase tracking-[0.25em] text-gold-200/70">Founded</p>
-              <p className="mt-2 font-display text-3xl text-white">Saudi Arabia</p>
+              <dl className="mt-12 grid grid-cols-3 gap-4 border-t border-white/10 pt-10 sm:gap-6">
+                {about.stats.map((stat) => (
+                  <div key={stat.label}>
+                    <dt className="text-[10px] uppercase tracking-[0.28em] text-gold-200/70">{stat.label}</dt>
+                    <dd className="mt-2 font-display text-lg text-white md:text-xl">{stat.value}</dd>
+                  </div>
+                ))}
+              </dl>
             </Reveal>
-            <Reveal delay={0.3}>
-              <p className="text-xs uppercase tracking-[0.25em] text-gold-200/70">Experience</p>
-              <p className="mt-2 font-display text-3xl text-white">6+ Years</p>
-            </Reveal>
-            <Reveal delay={0.4}>
-              <p className="text-xs uppercase tracking-[0.25em] text-gold-200/70">Reach</p>
-              <p className="mt-2 font-display text-3xl text-white">Global</p>
+          </div>
+
+          <div className="order-1 lg:order-2 lg:col-span-5 lg:sticky lg:top-28 lg:self-start">
+            <Reveal delay={0.08}>
+              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-black/60 shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
+                <Image
+                  src={assetPath(siteImages.story.about)}
+                  alt="Nawa Production — Saudi storytelling and cinematic production"
+                  fill
+                  className="object-contain object-center lg:object-cover"
+                  sizes="(max-width: 1024px) 100vw, 38vw"
+                  priority
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-deep/50 via-transparent to-black/10" />
+                <div className="absolute inset-0 ring-1 ring-inset ring-white/10" />
+              </div>
+              <span className="mt-4 block text-[10px] uppercase tracking-[0.28em] text-white/35">
+                Riyadh — Saudi Arabia
+              </span>
             </Reveal>
           </div>
         </div>

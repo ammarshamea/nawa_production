@@ -1,35 +1,49 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Montserrat, Tajawal, IBM_Plex_Sans_Arabic } from "next/font/google";
 import { SmoothScrollProvider } from "@/components/motion/SmoothScrollProvider";
+import { ScrollAnchor } from "@/components/motion/ScrollAnchor";
 import { Nav } from "@/components/Nav";
-import { Preloader } from "@/components/Preloader";
 import { brand } from "@/lib/content";
 import { assetPath } from "@/lib/assetPath";
 import "./globals.css";
 
-const display = Cormorant_Garamond({
+const headingEn = Montserrat({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-display",
+  variable: "--font-heading-en",
   display: "swap",
 });
 
-const sans = Inter({
+const bodyEn = Montserrat({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  variable: "--font-sans",
+  weight: ["300", "400", "500"],
+  variable: "--font-body-en",
+  display: "swap",
+});
+
+const headingAr = Tajawal({
+  subsets: ["arabic"],
+  weight: ["400", "500", "700"],
+  variable: "--font-heading-ar",
+  display: "swap",
+});
+
+const bodyAr = IBM_Plex_Sans_Arabic({
+  subsets: ["arabic"],
+  weight: ["300", "400", "500"],
+  variable: "--font-body-ar",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: `${brand.name} — ${brand.tagline}`,
+  title: `${brand.name} — ${brand.tagline.en}`,
   description:
-    "A Saudi production house crafting original content, commercial campaigns, and live experiences that leave a lasting impact.",
+    "A Saudi-American production house built on relentless craft, discipline, and cinematic ambition — executing scripts and creative direction into finished film, photography, and content at the highest standard.",
   metadataBase: new URL(`https://${brand.website}`),
   openGraph: {
-    title: `${brand.name} — ${brand.tagline}`,
+    title: `${brand.name} — ${brand.tagline.en}`,
     description:
-      "Saudi production house. Film, commercials, live events, post production, and AI-powered creative.",
+      "Saudi-American production house. Film & commercial production, live events, post production, and AI-powered production.",
     url: `https://${brand.website}`,
     siteName: brand.name,
     locale: "en_US",
@@ -37,9 +51,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${brand.name} — ${brand.tagline}`,
+    title: `${brand.name} — ${brand.tagline.en}`,
     description:
-      "Saudi production house. Film, commercials, live events, post production, and AI-powered creative.",
+      "Saudi-American production house. Film & commercial production, live events, post production, and AI-powered production.",
   },
   icons: {
     icon: assetPath("/assets/brand/logo-nawa-gold.png"),
@@ -48,7 +62,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#05030A",
+  themeColor: "#050505",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -57,10 +74,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${headingEn.variable} ${bodyEn.variable} ${headingAr.variable} ${bodyAr.variable}`}
+      suppressHydrationWarning
+    >
       <body className="font-sans" suppressHydrationWarning>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "history.scrollRestoration='manual';window.scrollTo(0,0);",
+          }}
+        />
         <SmoothScrollProvider>
-          <Preloader />
+          <ScrollAnchor />
           <Nav />
           {children}
         </SmoothScrollProvider>

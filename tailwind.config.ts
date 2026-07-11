@@ -6,9 +6,17 @@ const config: Config = {
     extend: {
       colors: {
         ink: {
-          DEFAULT: "#0A0710",
-          deep: "#05030A",
-          soft: "#13101C",
+          DEFAULT: "#050505",
+          deep: "#050505",
+          soft: "#0a0a0a",
+        },
+        studio: {
+          purple: "#380638",
+          "purple-black": "#1a061a",
+          gold: "#d49b64",
+          "gold-soft": "#e8b88a",
+          white: "#f5f1ea",
+          muted: "rgba(245, 241, 234, 0.65)",
         },
         plum: {
           50: "#F4ECFF",
@@ -20,32 +28,45 @@ const config: Config = {
           600: "#3F1F7A",
           700: "#2C1556",
           800: "#1C0E39",
-          900: "#0F0723",
+          900: "#380638",
         },
         gold: {
           50: "#FBF3DF",
           100: "#F2E1B0",
           200: "#E8CB80",
-          300: "#DDB55A",
-          400: "#D29F3C",
-          500: "#B8862A",
-          600: "#8E661E",
+          300: "#e8b88a",
+          400: "#d49b64",
+          500: "#d49b64",
+          600: "#b8844f",
           700: "#5F4413",
         },
       },
       fontFamily: {
-        display: ["var(--font-display)", "serif"],
-        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        display: ["var(--font-heading-en)", "system-ui", "sans-serif"],
+        sans: ["var(--font-body-en)", "system-ui", "sans-serif"],
+        heading: ["var(--font-heading-en)", "system-ui", "sans-serif"],
+        "heading-ar": ["var(--font-heading-ar)", "system-ui", "sans-serif"],
+        "body-ar": ["var(--font-body-ar)", "system-ui", "sans-serif"],
       },
       backgroundImage: {
-        "grain":
-          "radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)",
+        grain: "radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)",
         "gold-sheen":
-          "linear-gradient(135deg, #FBF3DF 0%, #DDB55A 40%, #8E661E 70%, #FBF3DF 100%)",
+          "linear-gradient(135deg, #f5f1ea 0%, #d49b64 40%, #b8844f 70%, #f5f1ea 100%)",
+        "purple-haze":
+          "radial-gradient(ellipse at 30% 40%, rgba(56, 6, 56, 0.55), transparent 65%)",
       },
       boxShadow: {
-        gold: "0 0 60px -10px rgba(221, 181, 90, 0.45)",
-        plum: "0 0 80px -10px rgba(123, 69, 200, 0.5)",
+        gold: "0 0 60px -10px rgba(212, 155, 100, 0.45)",
+        plum: "0 0 80px -10px rgba(56, 6, 56, 0.5)",
+      },
+      transitionTimingFunction: {
+        cinematic: "cubic-bezier(0.16, 1, 0.3, 1)",
+      },
+      transitionDuration: {
+        micro: "200ms",
+        ui: "400ms",
+        scene: "800ms",
+        cinematic: "1400ms",
       },
     },
   },
