@@ -19,7 +19,7 @@ export const siteImages = {
     production: "/assets/photos/outdoor-film-set-night.png",
     liveProduction: "/assets/photos/hero-live-broadcast.png",
     postProduction: "/assets/photos/post-production-suite.png",
-    aiProduction: "/assets/photos/events-orchestra-stage.png",
+    aiProduction: "/assets/photos/ai-storyboard-to-sequence.png",
     delivery: "/assets/photos/private-cinema-screening.png",
   },
 } as const;
