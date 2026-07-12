@@ -113,3 +113,4 @@ export function runHeroIntroStatic(refs: HeroIntroRefs) {
     { opacity: 1, y: 0, xPercent: 0, scale: 1 },
   );
 }
+

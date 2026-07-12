@@ -1,0 +1,12 @@
+export const LOCALE_CHANGE_EVENT = "nawa:locale-change";
+
+export function notifyLocaleChange() {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent(LOCALE_CHANGE_EVENT));
+}
+
+export function subscribeLocaleChange(handler: () => void) {
+  if (typeof window === "undefined") return () => {};
+  window.addEventListener(LOCALE_CHANGE_EVENT, handler);
+  return () => window.removeEventListener(LOCALE_CHANGE_EVENT, handler);
+}

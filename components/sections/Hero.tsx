@@ -2,16 +2,16 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import { hero } from "@/lib/content";
+import { useContent } from "@/lib/i18n/LanguageProvider";
 import { siteImages } from "@/lib/assets";
 import { assetPath } from "@/lib/assetPath";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { SectionWatermark } from "@/components/SectionWatermark";
 
-const headlineWords = hero.headline.split(" ");
-
 export function Hero() {
+  const { hero } = useContent();
   const reduce = useReducedMotion();
+  const headlineWords = hero.headline.split(" ");
 
   return (
     <section

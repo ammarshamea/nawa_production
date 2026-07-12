@@ -5,9 +5,11 @@ import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { scrollToSection } from "@/lib/assetPath";
+import { LOCALE_CHANGE_EVENT } from "@/lib/i18n/scrollSync";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ limitCallbacks: true, ignoreMobileResize: true });
 }
 
 function resetScrollPosition(lenis?: Lenis | null) {
@@ -26,17 +28,20 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
     resetScrollPosition();
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
     if (reduce) {
-      requestAnimationFrame(() => resetScrollPosition());
-      return;
+      const onLocaleChange = () => {
+        requestAnimationFrame(() => ScrollTrigger.refresh(true));
+      };
+      window.addEventListener(LOCALE_CHANGE_EVENT, onLocaleChange);
+      requestAnimationFrame(() => ScrollTrigger.refresh(true));
+      return () => window.removeEventListener(LOCALE_CHANGE_EVENT, onLocaleChange);
     }
 
     const lenis = new Lenis({
-      duration: 1.25,
+      duration: 1.1,
       easing: (t) => 1 - Math.pow(1 - t, 3),
-      wheelMultiplier: 1,
-      touchMultiplier: 1.35,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 1.2,
       smoothWheel: true,
       syncTouch: true,
       anchors: false,
@@ -83,9 +88,19 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
     stabilizeScroll();
     window.addEventListener("load", stabilizeScroll);
 
+    const onLocaleChange = () => {
+      lenis.resize();
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh(true);
+        lenis.resize();
+      });
+    };
+    window.addEventListener(LOCALE_CHANGE_EVENT, onLocaleChange);
+
     return () => {
       window.removeEventListener("resize", onResize);
       window.removeEventListener("load", stabilizeScroll);
+      window.removeEventListener(LOCALE_CHANGE_EVENT, onLocaleChange);
       document.removeEventListener("click", onAnchorClick);
       gsap.ticker.remove(onGsapTick);
       lenis.destroy();

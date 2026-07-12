@@ -2,13 +2,15 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { brand, contact } from "@/lib/content";
+import { useContent } from "@/lib/i18n/LanguageProvider";
 import { assetPath } from "@/lib/assetPath";
 import { Reveal } from "@/components/motion/Reveal";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { SectionWatermark } from "@/components/SectionWatermark";
 
 export function Contact() {
+  const { brand, contact } = useContent();
+
   return (
     <section
       id="contact"
@@ -22,13 +24,11 @@ export function Contact() {
 
       <div className="relative z-10 mx-auto max-w-6xl px-5 text-center sm:px-6">
         <Reveal>
-          <p className="text-xs uppercase tracking-[0.32em] text-gold-200/80">Reach out</p>
+          <p className="text-xs uppercase tracking-[0.32em] text-gold-200/80">{contact.label}</p>
         </Reveal>
         <Reveal delay={0.05}>
           <h2 className="mt-5 font-display text-4xl leading-[1] text-white sm:text-5xl md:text-7xl lg:text-[7rem]">
-            Let&apos;s{" "}
-            <span className="bg-gold-sheen bg-clip-text italic text-transparent">Create</span>{" "}
-            Together
+            {contact.title}
           </h2>
         </Reveal>
         <Reveal delay={0.15}>

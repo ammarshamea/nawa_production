@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useLayoutEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { productionJourney } from "@/lib/content";
+import { useContent } from "@/lib/i18n/LanguageProvider";
 import { assetPath } from "@/lib/assetPath";
 import { JourneyStagePanel } from "@/components/cinematic/JourneyStagePanel";
 import { FilmGrain } from "@/components/cinematic/FilmGrain";
@@ -14,7 +14,8 @@ if (typeof window !== "undefined") {
 }
 
 export function ProductionJourneyDesktop() {
-  const { stages, sectionTitle, sectionIntro } = productionJourney;
+  const { process } = useContent();
+  const { stages, sectionTitle, sectionIntro } = process;
   const sectionRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const cutRef = useRef<HTMLDivElement>(null);
@@ -54,7 +55,10 @@ export function ProductionJourneyDesktop() {
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             const idx = Math.min(stageCount - 1, Math.floor(self.progress * stageCount));
-            setActiveIndex(idx);
+            panelRefs.current.forEach((panel, i) => {
+              panel?.setAttribute("aria-hidden", i === idx ? "false" : "true");
+            });
+            setActiveIndex((prev) => (prev === idx ? prev : idx));
           },
         },
       });
@@ -157,16 +161,11 @@ export function ProductionJourneyDesktop() {
                 id="journey-heading"
                 className="text-[10px] uppercase tracking-[0.35em] text-studio-gold"
               >
-                {sectionTitle.en}
+                {sectionTitle}
               </p>
-              <p className="font-heading-ar mt-1 text-base text-studio-white/90 md:text-lg" dir="rtl">
-                {sectionTitle.ar}
-              </p>
-              {activeIndex === 0 && (
-                <p className="mt-4 hidden max-w-sm text-sm text-studio-muted lg:block">
-                  {sectionIntro.en}
-                </p>
-              )}
+              {sectionIntro ? (
+                <p className="mt-4 hidden max-w-sm text-sm text-studio-muted lg:block">{sectionIntro}</p>
+              ) : null}
             </div>
             <div className="hidden items-center gap-2 lg:flex" aria-hidden>
               {stages.map((_, i) => (

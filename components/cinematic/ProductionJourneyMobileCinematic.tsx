@@ -4,15 +4,15 @@ import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ourProcess } from "@/lib/content";
+import { useContent } from "@/lib/i18n/LanguageProvider";
 import { assetPath } from "@/lib/assetPath";
-import { en } from "@/lib/text";
 import { revealStageText, sceneCameraMoveMobile } from "@/lib/journeyMotion";
 import { JourneyStageCinematic } from "@/components/cinematic/JourneyStageCinematic";
 import { FilmGrain } from "@/components/cinematic/FilmGrain";
 
 export function ProductionJourneyMobileCinematic() {
-  const { stages, sectionTitle, sectionHeadline, sectionIntro } = ourProcess;
+  const { process } = useContent();
+  const { stages, sectionTitle, sectionHeadline, sectionIntro } = process;
   const sectionRef = useRef<HTMLElement>(null);
   const sceneRefs = useRef<(HTMLElement | null)[]>([]);
   const cameraRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -55,13 +55,26 @@ export function ProductionJourneyMobileCinematic() {
   return (
     <section id="process" ref={sectionRef} className="relative bg-ink-deep" aria-labelledby="process-heading">
       <div className="border-b border-white/5 px-6 py-10 sm:px-8 md:px-12">
-        <p id="process-heading" className="text-[10px] uppercase tracking-[0.32em] text-studio-gold">
-          {en(sectionTitle)}
-        </p>
-        <h2 className="mt-5 font-display text-2xl leading-tight text-studio-white sm:text-3xl">
-          {en(sectionHeadline)}
-        </h2>
-        <p className="mt-4 max-w-xl text-sm leading-relaxed text-studio-muted">{en(sectionIntro)}</p>
+        {sectionHeadline ? (
+          <>
+            <p id="process-heading" className="text-[10px] uppercase tracking-[0.32em] text-studio-gold">
+              {sectionTitle}
+            </p>
+            <h2 className="mt-5 font-display text-2xl leading-tight text-studio-white sm:text-3xl">
+              {sectionHeadline}
+            </h2>
+          </>
+        ) : (
+          <h2
+            id="process-heading"
+            className="font-display text-2xl leading-tight text-studio-white sm:text-3xl"
+          >
+            {sectionTitle}
+          </h2>
+        )}
+        {sectionIntro ? (
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-studio-muted">{sectionIntro}</p>
+        ) : null}
       </div>
 
       {stages.map((stage, i) => (
@@ -81,7 +94,7 @@ export function ProductionJourneyMobileCinematic() {
             >
               <Image
                 src={assetPath(stage.image)}
-                alt={en(stage.title)}
+                alt={stage.title}
                 fill
                 loading={i < 2 ? "eager" : "lazy"}
                 className="object-contain object-center"

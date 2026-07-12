@@ -1,6 +1,7 @@
 import { HeroCinematic } from "@/components/cinematic/HeroCinematic";
 import { About } from "@/components/sections/About";
 import { VisionMission } from "@/components/sections/VisionMission";
+import { Values } from "@/components/sections/Values";
 import { ProductionJourney } from "@/components/cinematic/ProductionJourney";
 import { ServicesCinematic } from "@/components/cinematic/ServicesCinematic";
 import { WorkSection } from "@/components/cinematic/WorkSection";
@@ -13,6 +14,7 @@ export default function Page() {
       <HeroCinematic />
       <About />
       <VisionMission />
+      <Values />
       <ProductionJourney />
       <ServicesCinematic />
       <WorkSection />

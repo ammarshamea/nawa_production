@@ -5,9 +5,8 @@ import Link from "next/link";
 import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { heroScene } from "@/lib/content";
+import { useContent, useLanguage } from "@/lib/i18n/LanguageProvider";
 import { assetPath, sectionHref } from "@/lib/assetPath";
-import { en } from "@/lib/text";
 import { FilmGrain } from "@/components/cinematic/FilmGrain";
 import {
   runHeroIntro,
@@ -20,18 +19,65 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+const GPU = { force3D: true };
+
 function FocusBrackets() {
   return (
     <div className="relative h-16 w-16 md:h-20 md:w-20" aria-hidden>
-      <span className="absolute left-0 top-0 h-4 w-4 border-l border-t border-studio-gold/80" />
-      <span className="absolute right-0 top-0 h-4 w-4 border-r border-t border-studio-gold/80" />
-      <span className="absolute bottom-0 left-0 h-4 w-4 border-b border-l border-studio-gold/80" />
-      <span className="absolute bottom-0 right-0 h-4 w-4 border-b border-r border-studio-gold/80" />
+      <span className="absolute start-0 top-0 h-4 w-4 border-s border-t border-studio-gold/80" />
+      <span className="absolute end-0 top-0 h-4 w-4 border-e border-t border-studio-gold/80" />
+      <span className="absolute bottom-0 start-0 h-4 w-4 border-b border-s border-studio-gold/80" />
+      <span className="absolute bottom-0 end-0 h-4 w-4 border-b border-e border-studio-gold/80" />
     </div>
   );
 }
 
+function bindHeroScroll(
+  section: HTMLElement,
+  camera: HTMLDivElement,
+  targets: {
+    concept: HTMLParagraphElement | null;
+    headline: HTMLHeadingElement | null;
+    body: HTMLDivElement | null;
+  },
+  scrub: number,
+  cameraTo: { scale: number; yPercent: number; x: string },
+) {
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: section,
+      start: "top top",
+      end: "bottom top",
+      scrub,
+      fastScrollEnd: true,
+    },
+  });
+
+  tl.fromTo(
+    camera,
+    { scale: 1.04, yPercent: 0, x: "0%", ...GPU },
+    { scale: cameraTo.scale, yPercent: cameraTo.yPercent, x: cameraTo.x, ease: "none", ...GPU },
+    0,
+  );
+
+  if (targets.concept) {
+    tl.to(targets.concept, { y: -12, opacity: 0.85, ease: "none", ...GPU }, 0);
+  }
+
+  if (targets.headline) {
+    tl.to(targets.headline, { y: -18, ease: "none", ...GPU }, 0);
+  }
+
+  if (targets.body) {
+    tl.to(targets.body, { y: -10, opacity: 0.92, ease: "none", ...GPU }, 0);
+  }
+
+  return tl;
+}
+
 export function HeroCinematic() {
+  const { hero } = useContent();
+  const { isRtl } = useLanguage();
   const reduce = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
@@ -66,84 +112,34 @@ export function HeroCinematic() {
     }
 
     const intro = runHeroIntro(refs);
-
     const mm = gsap.matchMedia();
 
     mm.add("(max-width: 1023px)", () => {
       if (!sectionRef.current || !cameraRef.current) return;
 
-      gsap.fromTo(
+      bindHeroScroll(
+        sectionRef.current,
         cameraRef.current,
-        { scale: 1.04, yPercent: 0, x: "0%" },
-        {
-          scale: 1.09,
-          yPercent: 5,
-          x: "-1.5%",
-          ease: "none",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top top",
-            end: "bottom top",
-            scrub: 1.2,
-          },
-        },
+        { concept: conceptRef.current, headline: null, body: null },
+        1,
+        { scale: 1.09, yPercent: 5, x: "-1.5%" },
       );
-
-      gsap.to(conceptRef.current, {
-        y: -12,
-        opacity: 0.85,
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.2,
-        },
-      });
     });
 
     mm.add("(min-width: 1024px)", () => {
       if (!sectionRef.current || !cameraRef.current) return;
 
-      gsap.fromTo(
+      bindHeroScroll(
+        sectionRef.current,
         cameraRef.current,
-        { scale: 1.04, yPercent: 0, x: "0%" },
         {
-          scale: 1.12,
-          yPercent: 9,
-          x: "-2.5%",
-          ease: "none",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top top",
-            end: "bottom top",
-            scrub: 1.4,
-          },
+          concept: conceptRef.current,
+          headline: headlineRef.current,
+          body: bodyRef.current,
         },
+        1.2,
+        { scale: 1.12, yPercent: 9, x: "-2.5%" },
       );
-
-      gsap.to([conceptRef.current, headlineRef.current], {
-        y: -18,
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.4,
-        },
-      });
-
-      gsap.to(bodyRef.current, {
-        y: -10,
-        opacity: 0.92,
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.4,
-        },
-      });
     });
 
     return () => {
@@ -156,16 +152,17 @@ export function HeroCinematic() {
     <section
       id="home"
       ref={sectionRef}
+      dir="ltr"
       className="relative isolate flex min-h-[100svh] items-end overflow-hidden bg-black supports-[height:100dvh]:min-h-[100dvh]"
     >
       <div ref={bgRef} className="absolute inset-0 -z-10 overflow-hidden bg-black">
         <div
           ref={cameraRef}
-          className="absolute inset-[-12%] will-change-[transform,filter]"
+          className="absolute inset-[-12%] will-change-transform"
           style={{ transformOrigin: "50% 45%" }}
         >
           <Image
-            src={assetPath(heroScene.image)}
+            src={assetPath(hero.image)}
             alt=""
             fill
             priority
@@ -192,42 +189,45 @@ export function HeroCinematic() {
         </div>
         <div
           ref={sweepRef}
-          className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-studio-gold/40 to-transparent blur-md"
+          className="absolute inset-y-0 start-0 w-1/2 bg-gradient-to-r from-transparent via-studio-gold/40 to-transparent blur-md"
           aria-hidden
         />
       </div>
 
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-[max(4rem,env(safe-area-inset-bottom,0px))] pt-[max(7rem,env(safe-area-inset-top,0px)+4rem)] sm:px-6 sm:pb-20 sm:pt-36 md:pb-24">
+      <div
+        dir={isRtl ? "rtl" : "ltr"}
+        className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-[max(4rem,env(safe-area-inset-bottom,0px))] pt-[max(7rem,env(safe-area-inset-top,0px)+4rem)] sm:px-6 sm:pb-20 sm:pt-36 md:pb-24"
+      >
         <p
           ref={conceptRef}
           className="text-[10px] uppercase tracking-[0.38em] text-studio-gold sm:text-xs"
         >
-          {en(heroScene.concept)}
+          {hero.concept}
         </p>
 
         <h1
           ref={headlineRef}
           className="mt-6 max-w-3xl font-display text-4xl leading-[0.95] text-studio-white sm:text-5xl md:text-6xl lg:text-7xl"
         >
-          {en(heroScene.headline)}
+          {hero.headline}
         </h1>
 
         <p ref={bodyRef} className="mt-8 max-w-2xl text-sm leading-relaxed text-studio-muted md:text-base">
-          {en(heroScene.supporting)}
+          {hero.supporting}
         </p>
 
         <div ref={ctasRef} className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
           <Link
-            href={sectionHref(heroScene.ctaPrimary.href)}
+            href={sectionHref(hero.ctaPrimary.href)}
             className="inline-flex items-center justify-center rounded-full border border-studio-gold/50 bg-studio-gold/10 px-8 py-3.5 text-xs uppercase tracking-[0.22em] text-studio-gold transition-colors hover:border-studio-gold hover:bg-studio-gold/20"
           >
-            {en(heroScene.ctaPrimary.label)}
+            {hero.ctaPrimary.label}
           </Link>
           <Link
-            href={sectionHref(heroScene.ctaSecondary.href)}
+            href={sectionHref(hero.ctaSecondary.href)}
             className="inline-flex items-center justify-center rounded-full border border-white/15 px-8 py-3.5 text-xs uppercase tracking-[0.22em] text-white/80 transition-colors hover:border-white/30"
           >
-            {en(heroScene.ctaSecondary.label)}
+            {hero.ctaSecondary.label}
           </Link>
         </div>
       </div>

@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { productionJourney } from "@/lib/content";
+import { useContent } from "@/lib/i18n/LanguageProvider";
 import { assetPath } from "@/lib/assetPath";
 import { JourneyStagePanel } from "@/components/cinematic/JourneyStagePanel";
 import { FilmGrain } from "@/components/cinematic/FilmGrain";
 
 export function ProductionJourneyMobile() {
-  const { stages, sectionTitle, sectionIntro } = productionJourney;
+  const { process } = useContent();
+  const { stages, sectionTitle, sectionHeadline, sectionIntro } = process;
   const [activeIndex, setActiveIndex] = useState(0);
   const itemRefs = useRef<(HTMLElement | null)[]>([]);
 
@@ -35,14 +36,15 @@ export function ProductionJourneyMobile() {
   return (
     <section id="journey" className="relative bg-black">
       <div className="border-b border-white/5 px-5 py-6 sm:px-6">
-        <p className="text-[10px] uppercase tracking-[0.32em] text-studio-gold">{sectionTitle.en}</p>
-        <p className="font-heading-ar mt-1 text-lg text-studio-white" dir="rtl">
-          {sectionTitle.ar}
-        </p>
-        <p className="mt-3 text-sm text-studio-muted">{sectionIntro.en}</p>
-        <p className="font-body-ar mt-2 text-right text-sm text-studio-muted" dir="rtl">
-          {sectionIntro.ar}
-        </p>
+        {sectionHeadline ? (
+          <>
+            <p className="text-[10px] uppercase tracking-[0.32em] text-studio-gold">{sectionTitle}</p>
+            <h2 className="mt-3 font-display text-2xl text-studio-white sm:text-3xl">{sectionHeadline}</h2>
+          </>
+        ) : (
+          <h2 className="font-display text-2xl text-studio-white sm:text-3xl">{sectionTitle}</h2>
+        )}
+        {sectionIntro ? <p className="mt-3 text-sm text-studio-muted">{sectionIntro}</p> : null}
         <div className="mt-4 flex gap-1">
           {stages.map((_, i) => (
             <span
@@ -66,7 +68,7 @@ export function ProductionJourneyMobile() {
         >
           <Image
             src={assetPath(stage.image)}
-            alt={stage.title.en}
+            alt={stage.title}
             fill
             loading={i === 0 ? "eager" : "lazy"}
             className="object-cover object-center"

@@ -1,6 +1,6 @@
-import type { JourneyStage } from "@/lib/content";
+import type { ProcessStage } from "@/lib/locales/types";
 
-type MotionKey = JourneyStage["motionKey"];
+type MotionKey = ProcessStage["motionKey"];
 
 type ScrubTarget = Element | Element[] | NodeListOf<Element> | string | null;
 type ScrubTimeline = {
@@ -12,6 +12,8 @@ type ScrubTimeline = {
   ) => ScrubTimeline;
   to: (target: ScrubTarget, vars: Record<string, unknown>, position?: number | string) => ScrubTimeline;
 };
+
+const GPU = { force3D: true };
 
 /** Scroll-scrubbed camera moves — each scene feels like a held film shot. */
 export function sceneCameraMove(
@@ -27,37 +29,32 @@ export function sceneCameraMove(
 
   switch (motionKey) {
     case "documentsSlide":
-      tl.fromTo(target, { scale: 1.14, x: "3%" }, { scale: 1.08, x: "-4%", duration, ease }, at);
+      tl.fromTo(target, { scale: 1.14, x: "3%", ...GPU }, { scale: 1.08, x: "-4%", duration, ease, ...GPU }, at);
       break;
     case "storyboardStrip":
-      tl.fromTo(target, { scale: 1.1, x: "5%" }, { scale: 1.06, x: "-5%", duration, ease }, at);
+      tl.fromTo(target, { scale: 1.1, x: "5%", ...GPU }, { scale: 1.06, x: "-5%", duration, ease, ...GPU }, at);
       break;
     case "checklistFill":
-      tl.fromTo(target, { scale: 1.18, y: "2%" }, { scale: 1.05, y: "0%", duration, ease }, at);
+      tl.fromTo(target, { scale: 1.18, y: "2%", ...GPU }, { scale: 1.05, y: "0%", duration, ease, ...GPU }, at);
       break;
     case "dollyMove":
-      tl.fromTo(target, { scale: 1.22, y: "1%" }, { scale: 1.06, y: "-3%", duration, ease }, at);
+      tl.fromTo(target, { scale: 1.22, y: "1%", ...GPU }, { scale: 1.06, y: "-3%", duration, ease, ...GPU }, at);
       break;
     case "lightSweep":
-      tl.fromTo(target, { scale: 1.12 }, { scale: 1.07, duration, ease }, at);
+      tl.fromTo(target, { scale: 1.12, ...GPU }, { scale: 1.07, duration, ease, ...GPU }, at);
       break;
     case "colorGrade":
-      tl.fromTo(
-        target,
-        { scale: 1.1, filter: "saturate(0.55) contrast(1.15) brightness(0.85)" },
-        { scale: 1.05, filter: "saturate(1.15) contrast(1.05) brightness(1)", duration, ease },
-        at,
-      );
+      tl.fromTo(target, { scale: 1.1, ...GPU }, { scale: 1.05, duration, ease, ...GPU }, at);
       break;
     case "frameMultiply":
-      tl.fromTo(target, { scale: 1.08 }, { scale: 1.14, duration: duration * 0.5, ease }, at);
-      tl.to(target, { scale: 1.06, duration: duration * 0.5, ease }, at + duration * 0.5);
+      tl.fromTo(target, { scale: 1.08, ...GPU }, { scale: 1.14, duration: duration * 0.5, ease, ...GPU }, at);
+      tl.to(target, { scale: 1.06, duration: duration * 0.5, ease, ...GPU }, at + duration * 0.5);
       break;
     case "screenExpand":
-      tl.fromTo(target, { scale: 1.04 }, { scale: 1.1, duration, ease }, at);
+      tl.fromTo(target, { scale: 1.04, ...GPU }, { scale: 1.1, duration, ease, ...GPU }, at);
       break;
     default:
-      tl.fromTo(target, { scale: 1.12 }, { scale: 1.06, duration, ease }, at);
+      tl.fromTo(target, { scale: 1.12, ...GPU }, { scale: 1.06, duration, ease, ...GPU }, at);
   }
 }
 
@@ -75,27 +72,22 @@ export function sceneCameraMoveMobile(
 
   switch (motionKey) {
     case "colorGrade":
-      tl.fromTo(
-        target,
-        { scale: 1, filter: "saturate(0.65) contrast(1.05) brightness(0.88)" },
-        { scale: 1.02, filter: "saturate(1.1) contrast(1.02) brightness(1)", duration, ease },
-        at,
-      );
+      tl.fromTo(target, { scale: 1, ...GPU }, { scale: 1.02, duration, ease, ...GPU }, at);
       break;
     case "documentsSlide":
-      tl.fromTo(target, { scale: 1, x: "1%" }, { scale: 1.02, x: "-1%", duration, ease }, at);
+      tl.fromTo(target, { scale: 1, x: "1%", ...GPU }, { scale: 1.02, x: "-1%", duration, ease, ...GPU }, at);
       break;
     case "storyboardStrip":
-      tl.fromTo(target, { scale: 1, x: "1.5%" }, { scale: 1.02, x: "-1.5%", duration, ease }, at);
+      tl.fromTo(target, { scale: 1, x: "1.5%", ...GPU }, { scale: 1.02, x: "-1.5%", duration, ease, ...GPU }, at);
       break;
     case "dollyMove":
-      tl.fromTo(target, { scale: 1, y: "0.5%" }, { scale: 1.03, y: "-0.5%", duration, ease }, at);
+      tl.fromTo(target, { scale: 1, y: "0.5%", ...GPU }, { scale: 1.03, y: "-0.5%", duration, ease, ...GPU }, at);
       break;
     case "screenExpand":
-      tl.fromTo(target, { scale: 1 }, { scale: 1.03, duration, ease }, at);
+      tl.fromTo(target, { scale: 1, ...GPU }, { scale: 1.03, duration, ease, ...GPU }, at);
       break;
     default:
-      tl.fromTo(target, { scale: 1 }, { scale: 1.02, duration, ease }, at);
+      tl.fromTo(target, { scale: 1, ...GPU }, { scale: 1.02, duration, ease, ...GPU }, at);
   }
 }
 
@@ -103,14 +95,14 @@ export function revealStageText(tl: ScrubTimeline, panel: HTMLElement, at: numbe
   const parts = panel.querySelectorAll<HTMLElement>("[data-j-part]");
   tl.fromTo(
     parts,
-    { opacity: 0, y: 14, filter: "blur(4px)" },
+    { opacity: 0, y: 14, ...GPU },
     {
       opacity: 1,
       y: 0,
-      filter: "blur(0px)",
       duration: 0.55,
       stagger: 0.04,
       ease: "power2.out",
+      ...GPU,
     },
     at,
   );
@@ -120,7 +112,7 @@ export function softenStageText(tl: ScrubTimeline, panel: HTMLElement, at: numbe
   const parts = panel.querySelectorAll<HTMLElement>("[data-j-part]");
   tl.to(
     parts,
-    { opacity: 0, y: -10, filter: "blur(3px)", duration: 0.4, stagger: 0.02, ease: "power2.inOut" },
+    { opacity: 0, y: -10, duration: 0.4, stagger: 0.02, ease: "power2.inOut", ...GPU },
     at,
   );
 }
@@ -156,7 +148,7 @@ export function hideStageText(tl: ScrubTimeline, panel: HTMLElement, at: number)
   const parts = panel.querySelectorAll<HTMLElement>("[data-j-part]");
   tl.to(
     parts,
-    { opacity: 0, y: -18, filter: "blur(6px)", duration: 0.28, stagger: 0.03, ease: "power2.in" },
+    { opacity: 0, y: -18, duration: 0.28, stagger: 0.03, ease: "power2.in", ...GPU },
     at,
   );
 }

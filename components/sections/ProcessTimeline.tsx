@@ -2,11 +2,12 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { process } from "@/lib/content";
+import { useContent } from "@/lib/i18n/LanguageProvider";
 import { Reveal } from "@/components/motion/Reveal";
 import { SectionWatermark } from "@/components/SectionWatermark";
 
 export function ProcessTimeline() {
+  const { process } = useContent();
   const ref = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -25,13 +26,15 @@ export function ProcessTimeline() {
         </Reveal>
         <Reveal delay={0.05}>
           <h2 className="mt-5 font-display text-4xl leading-[1] text-white sm:text-5xl md:text-6xl lg:text-7xl">
-            Our Process
+            {process.sectionTitle}
           </h2>
         </Reveal>
         <Reveal delay={0.15}>
-          <p className="mt-5 max-w-xl text-sm leading-relaxed text-white/65 sm:text-base">
-            A steady rhythm from our first conversation to final delivery — no stage is treated as filler.
-          </p>
+          {process.sectionIntro ? (
+            <p className="mt-5 max-w-xl text-sm leading-relaxed text-white/65 sm:text-base">
+              {process.sectionIntro}
+            </p>
+          ) : null}
         </Reveal>
 
         <div ref={ref} className="relative mt-16 pl-8 sm:pl-14 md:pl-20">
@@ -45,7 +48,7 @@ export function ProcessTimeline() {
           </div>
 
           <ul className="space-y-12 md:space-y-20 lg:space-y-28">
-            {process.map((step, i) => (
+            {process.stages.map((step, i) => (
               <motion.li
                 key={step.title}
                 initial={{ opacity: 0, y: 30 }}

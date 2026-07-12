@@ -1,13 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { about } from "@/lib/content";
-import { siteImages } from "@/lib/assets";
+import { useContent } from "@/lib/i18n/LanguageProvider";
 import { assetPath } from "@/lib/assetPath";
 import { Reveal } from "@/components/motion/Reveal";
 import { SectionWatermark } from "@/components/SectionWatermark";
 
 export function About() {
+  const { about } = useContent();
+
   return (
     <section id="about" className="relative overflow-hidden bg-ink-deep py-24 md:py-32 lg:py-40">
       <SectionWatermark position="right" />
@@ -18,9 +19,9 @@ export function About() {
         </Reveal>
         <Reveal delay={0.05}>
           <h2 className="mt-5 max-w-3xl font-display text-4xl leading-[1] text-white sm:text-5xl md:text-6xl">
-            About
+            {about.title}
             <br />
-            <span className="bg-gold-sheen bg-clip-text italic text-transparent">Nawa</span>
+            <span className="bg-gold-sheen bg-clip-text italic text-transparent">{about.titleAccent}</span>
           </h2>
         </Reveal>
         <Reveal delay={0.1}>
@@ -31,7 +32,7 @@ export function About() {
           <div className="order-2 lg:order-1 lg:col-span-7">
             <Reveal delay={0.12}>
               <div className="space-y-6 text-base leading-[1.75] text-white/80 md:text-lg">
-                {about.body.split("\n\n").map((paragraph) => (
+                {about.body.map((paragraph) => (
                   <p key={paragraph.slice(0, 32)}>{paragraph}</p>
                 ))}
               </div>
@@ -53,8 +54,8 @@ export function About() {
             <Reveal delay={0.08}>
               <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-black/60 shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
                 <Image
-                  src={assetPath(siteImages.story.about)}
-                  alt="Nawa Production — Saudi storytelling and cinematic production"
+                  src={assetPath(about.image)}
+                  alt=""
                   fill
                   className="object-contain object-center lg:object-cover"
                   sizes="(max-width: 1024px) 100vw, 38vw"
@@ -64,7 +65,7 @@ export function About() {
                 <div className="absolute inset-0 ring-1 ring-inset ring-white/10" />
               </div>
               <span className="mt-4 block text-[10px] uppercase tracking-[0.28em] text-white/35">
-                Riyadh — Saudi Arabia
+                {about.locationCaption}
               </span>
             </Reveal>
           </div>

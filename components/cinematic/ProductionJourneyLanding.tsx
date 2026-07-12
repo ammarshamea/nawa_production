@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import { ourProcess } from "@/lib/content";
+import { useContent, useLanguage } from "@/lib/i18n/LanguageProvider";
 import { assetPath } from "@/lib/assetPath";
 import { JourneyStagePanel } from "@/components/cinematic/JourneyStagePanel";
-import { en } from "@/lib/text";
 
 export function ProductionJourneyLanding() {
-  const { stages, sectionTitle, sectionHeadline, sectionIntro } = ourProcess;
+  const { process } = useContent();
+  const { isRtl } = useLanguage();
+  const { stages, sectionTitle, sectionHeadline, sectionIntro } = process;
   const stageRefs = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
@@ -31,18 +32,31 @@ export function ProductionJourneyLanding() {
   }, []);
 
   return (
-    <section id="process" className="relative bg-black" aria-labelledby="process-heading">
+    <section id="process" className="relative bg-black" aria-labelledby="process-heading" dir={isRtl ? "rtl" : "ltr"}>
       <div className="border-b border-white/5 bg-ink-deep">
         <div className="mx-auto max-w-7xl px-6 py-20 md:px-12 md:py-28">
-          <p id="process-heading" className="text-[10px] uppercase tracking-[0.35em] text-studio-gold">
-            {en(sectionTitle)}
-          </p>
-          <h2 className="mt-6 font-display text-3xl leading-tight text-studio-white md:text-5xl lg:text-6xl">
-            {en(sectionHeadline)}
-          </h2>
-          <p className="mt-8 max-w-2xl text-sm leading-relaxed text-studio-muted md:text-base">
-            {en(sectionIntro)}
-          </p>
+          {sectionHeadline ? (
+            <>
+              <p id="process-heading" className="text-[10px] uppercase tracking-[0.35em] text-studio-gold">
+                {sectionTitle}
+              </p>
+              <h2 className="mt-6 font-display text-3xl leading-tight text-studio-white md:text-5xl lg:text-6xl">
+                {sectionHeadline}
+              </h2>
+            </>
+          ) : (
+            <h2
+              id="process-heading"
+              className="font-display text-3xl leading-tight text-studio-white md:text-5xl lg:text-6xl"
+            >
+              {sectionTitle}
+            </h2>
+          )}
+          {sectionIntro ? (
+            <p className="mt-8 max-w-2xl text-sm leading-relaxed text-studio-muted md:text-base">
+              {sectionIntro}
+            </p>
+          ) : null}
         </div>
       </div>
 
@@ -66,7 +80,7 @@ export function ProductionJourneyLanding() {
                 <div className="relative aspect-[4/3] overflow-hidden bg-black lg:aspect-auto lg:min-h-[28rem] xl:min-h-[32rem]">
                   <Image
                     src={assetPath(stage.image)}
-                    alt={en(stage.title)}
+                    alt={stage.title}
                     fill
                     loading={i < 2 ? "eager" : "lazy"}
                     className="object-contain object-center transition-transform duration-[1.2s] ease-out group-[.is-visible]:scale-100 scale-105 lg:object-cover"

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { projects, workScene } from "@/lib/content";
-import { en } from "@/lib/text";
+import { projects } from "@/lib/content";
+import { useContent } from "@/lib/i18n/LanguageProvider";
 import { ProjectThumbnail } from "@/components/sections/ProjectThumbnail";
 
 type Project = (typeof projects)[number];
@@ -61,15 +61,16 @@ function VideoModal({ project, onClose }: { project: Project; onClose: () => voi
 
 export function WorkSection() {
   const [active, setActive] = useState<Project | null>(null);
+  const { work } = useContent();
 
   return (
     <section id="projects" className="relative overflow-hidden bg-ink-deep py-20 md:py-28">
       <div className="pointer-events-none absolute inset-0 bg-purple-haze opacity-40" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-12">
-        <p className="text-[10px] uppercase tracking-[0.35em] text-studio-gold">{en(workScene.label)}</p>
-        <h2 className="mt-4 font-display text-4xl text-studio-white md:text-6xl">{en(workScene.title)}</h2>
-        <p className="mt-6 max-w-xl text-sm text-studio-muted">{en(workScene.intro)}</p>
+        <p className="text-[10px] uppercase tracking-[0.35em] text-studio-gold">{work.label}</p>
+        <h2 className="mt-4 font-display text-4xl text-studio-white md:text-6xl">{work.title}</h2>
+        <p className="mt-6 max-w-xl text-sm text-studio-muted">{work.intro}</p>
 
         <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
           {projects.map((project, i) => (

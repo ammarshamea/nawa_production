@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { services, servicesIntro } from "@/lib/content";
+import { useContent } from "@/lib/i18n/LanguageProvider";
 import { assetPath } from "@/lib/assetPath";
 import { Reveal } from "@/components/motion/Reveal";
 
@@ -13,6 +13,7 @@ if (typeof window !== "undefined") {
 }
 
 export function ServicesChapters() {
+  const { services } = useContent();
   const trackRef = useRef<HTMLDivElement | null>(null);
   const panelsRef = useRef<HTMLDivElement | null>(null);
 
@@ -67,12 +68,12 @@ export function ServicesChapters() {
         </Reveal>
         <Reveal delay={0.05}>
           <h2 className="mt-6 font-display text-4xl leading-[1] text-white sm:text-5xl md:text-7xl lg:text-[7rem]">
-            {servicesIntro.title}
+            {services.title}
           </h2>
         </Reveal>
         <Reveal delay={0.15}>
           <p className="mt-8 max-w-2xl text-base leading-relaxed text-white/70 md:text-lg">
-            {servicesIntro.body}
+            {services.intro}
           </p>
         </Reveal>
       </div>
@@ -80,9 +81,9 @@ export function ServicesChapters() {
       <div ref={trackRef} className="relative z-10 overflow-hidden lg:h-[100svh]">
         <div
           ref={panelsRef}
-          className="flex flex-col lg:h-full lg:w-[500vw] lg:flex-row"
+          className="flex flex-col lg:h-full lg:w-[400vw] lg:flex-row"
         >
-          {services.map((s) => (
+          {services.items.map((s) => (
             <article
               key={s.title}
               className="service-panel relative flex min-h-[80svh] w-full shrink-0 items-end overflow-hidden lg:min-h-0 lg:h-full lg:w-screen"

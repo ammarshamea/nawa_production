@@ -1,12 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ourProcess } from "@/lib/content";
+import { useContent, useLanguage } from "@/lib/i18n/LanguageProvider";
 import { assetPath } from "@/lib/assetPath";
-import { en } from "@/lib/text";
+import { LOCALE_CHANGE_EVENT } from "@/lib/i18n/scrollSync";
 import {
   crossfadeStage,
   sceneCameraMoveMobile,
@@ -31,14 +31,16 @@ function sectionHeightUnits(totalUnits: number) {
 }
 
 export function ProductionJourneyCinematic() {
-  const { stages, sectionTitle, sectionHeadline, sectionIntro } = ourProcess;
+  const { process } = useContent();
+  const { isRtl } = useLanguage();
+  const { stages, sectionTitle, sectionHeadline, sectionIntro } = process;
+  const stageSignature = useMemo(() => stages.map((stage) => stage.id).join("|"), [stages]);
   const sectionRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const cameraRefs = useRef<(HTMLDivElement | null)[]>([]);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [activeIndex, setActiveIndex] = useState(0);
   const [sectionHeight, setSectionHeight] = useState<string>("500vh");
 
   useLayoutEffect(() => {
@@ -63,14 +65,14 @@ export function ProductionJourneyCinematic() {
 
         if (i === 0) {
           gsap.set(layer, { opacity: 1 });
-          gsap.set(camera, { scale: initialScale, x: "0%", y: "0%", filter: "none" });
+          gsap.set(camera, { scale: initialScale, x: "0%", y: "0%", force3D: true });
           gsap.set(panel, { opacity: 1 });
-          gsap.set(panel.querySelectorAll("[data-j-part]"), { opacity: 1, y: 0, filter: "blur(0px)" });
+          gsap.set(panel.querySelectorAll("[data-j-part]"), { opacity: 1, y: 0, force3D: true });
         } else {
           gsap.set(layer, { opacity: 0 });
           gsap.set(panel, { opacity: 0 });
-          gsap.set(camera, { scale: initialScale, x: "0%", y: "0%", filter: "none" });
-          gsap.set(panel.querySelectorAll("[data-j-part]"), { opacity: 0, y: 14, filter: "blur(4px)" });
+          gsap.set(camera, { scale: initialScale, x: "0%", y: "0%", force3D: true });
+          gsap.set(panel.querySelectorAll("[data-j-part]"), { opacity: 0, y: 14, force3D: true });
         }
       });
 
@@ -80,14 +82,16 @@ export function ProductionJourneyCinematic() {
           start: "top top",
           end: () => `+=${window.innerHeight * totalUnits * scrollMultiplier()}`,
           pin: pinRef.current,
-          scrub: wide ? 1.6 : 1.1,
+          scrub: wide ? 1 : 0.75,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           fastScrollEnd: true,
           onUpdate: (self) => {
             const pos = self.progress * totalUnits;
             const idx = Math.min(count - 1, Math.floor(pos));
-            setActiveIndex(idx);
+            panelRefs.current.forEach((panel, i) => {
+              panel?.setAttribute("aria-hidden", i === idx ? "false" : "true");
+            });
           },
         },
       });
@@ -110,7 +114,7 @@ export function ProductionJourneyCinematic() {
 
         crossfadeStage(master, prevLayer, layer, prevPanel, panel, t);
 
-        master.set(camera, { scale: initialScale, x: "0%", y: "0%", filter: "none" }, t);
+        master.set(camera, { scale: initialScale, x: "0%", y: "0%", force3D: true }, t);
 
         const sceneDuration = i === count - 1 ? 1 + DELIVERY_HOLD : 1;
         applyCamera(master, camera, stages[i].motionKey, t, sceneDuration);
@@ -127,15 +131,21 @@ export function ProductionJourneyCinematic() {
       ScrollTrigger.refresh();
     };
 
+    const onLocaleChange = () => {
+      requestAnimationFrame(() => ScrollTrigger.refresh(true));
+    };
+
     window.addEventListener("resize", refresh);
     window.addEventListener("orientationchange", refresh);
+    window.addEventListener(LOCALE_CHANGE_EVENT, onLocaleChange);
 
     return () => {
       window.removeEventListener("resize", refresh);
       window.removeEventListener("orientationchange", refresh);
+      window.removeEventListener(LOCALE_CHANGE_EVENT, onLocaleChange);
       ctx.revert();
     };
-  }, [stages]);
+  }, [stageSignature, stages]);
 
   return (
     <section
@@ -147,7 +157,9 @@ export function ProductionJourneyCinematic() {
     >
       <div
         ref={pinRef}
+        dir="ltr"
         className="relative h-[100dvh] min-h-[100svh] w-full overflow-hidden supports-[height:100dvh]:min-h-[100dvh]"
+        style={{ contain: "layout paint" }}
       >
         {stages.map((stage, i) => (
           <div
@@ -182,17 +194,33 @@ export function ProductionJourneyCinematic() {
         <div className="journey-vignette pointer-events-none absolute inset-0 z-20 opacity-50 md:opacity-70" aria-hidden />
         <FilmGrain />
 
-        <div className="relative z-40 flex h-full flex-col justify-between px-5 pb-[max(2.5rem,env(safe-area-inset-bottom,0px))] pt-[max(6.5rem,env(safe-area-inset-top,0px)+4.5rem)] sm:px-8 md:px-12 md:pb-16 md:pt-32 lg:px-20 lg:pb-24">
+        <div
+          dir={isRtl ? "rtl" : "ltr"}
+          className="relative z-40 flex h-full flex-col justify-between px-5 pb-[max(2.5rem,env(safe-area-inset-bottom,0px))] pt-[max(6.5rem,env(safe-area-inset-top,0px)+4.5rem)] sm:px-8 md:px-12 md:pb-16 md:pt-32 lg:px-20 lg:pb-24"
+        >
           <div ref={headerRef} className="max-w-2xl">
-            <p id="process-heading" className="text-[10px] uppercase tracking-[0.32em] text-studio-gold sm:tracking-[0.35em]">
-              {en(sectionTitle)}
-            </p>
-            <h2 className="mt-2 font-display text-xl leading-tight text-studio-white sm:mt-3 sm:text-2xl md:text-4xl lg:text-5xl">
-              {en(sectionHeadline)}
-            </h2>
-            <p className="mt-2 max-w-lg text-xs leading-relaxed text-studio-muted sm:mt-3 sm:text-sm md:text-base">
-              {en(sectionIntro)}
-            </p>
+            {sectionHeadline ? (
+              <>
+                <p id="process-heading" className="text-[10px] uppercase tracking-[0.32em] text-studio-gold sm:tracking-[0.35em]">
+                  {sectionTitle}
+                </p>
+                <h2 className="mt-2 font-display text-xl leading-tight text-studio-white sm:mt-3 sm:text-2xl md:text-4xl lg:text-5xl">
+                  {sectionHeadline}
+                </h2>
+              </>
+            ) : (
+              <h2
+                id="process-heading"
+                className="font-display text-xl leading-tight text-studio-white sm:text-2xl md:text-4xl lg:text-5xl"
+              >
+                {sectionTitle}
+              </h2>
+            )}
+            {sectionIntro ? (
+              <p className="mt-2 max-w-lg text-xs leading-relaxed text-studio-muted sm:mt-3 sm:text-sm md:text-base">
+                {sectionIntro}
+              </p>
+            ) : null}
           </div>
 
           <div className="relative min-h-[180px] pb-1 sm:min-h-[200px] md:min-h-[240px] md:pb-4">
@@ -203,7 +231,7 @@ export function ProductionJourneyCinematic() {
                   panelRefs.current[i] = el;
                 }}
                 className="absolute inset-x-0 bottom-0 max-w-3xl"
-                aria-hidden={i !== activeIndex}
+                aria-hidden={i !== 0}
               >
                 <JourneyStageCinematic stage={stage} />
               </div>

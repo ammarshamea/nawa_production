@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { clients } from "@/lib/content";
+import { clientsList } from "@/lib/content";
+import { useContent } from "@/lib/i18n/LanguageProvider";
 import { assetPath } from "@/lib/assetPath";
 import { driveThumbnailUrls } from "@/lib/drive";
 import { Reveal } from "@/components/motion/Reveal";
@@ -57,6 +58,8 @@ function ClientLogo({
 }
 
 export function Clients() {
+  const { clients } = useContent();
+
   return (
     <section id="clients" className="relative overflow-hidden bg-ink-deep py-24 md:py-32 lg:py-40">
       <SectionWatermark position="right" />
@@ -64,7 +67,7 @@ export function Clients() {
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
           <div>
             <Reveal>
-              <p className="text-xs uppercase tracking-[0.32em] text-gold-200/80">Our Clients</p>
+              <p className="text-xs uppercase tracking-[0.32em] text-gold-200/80">{clients.label}</p>
             </Reveal>
             <Reveal delay={0.05}>
               <h2 className="mt-5 max-w-2xl font-display text-4xl leading-[1] text-white sm:text-5xl md:text-6xl">
@@ -78,7 +81,7 @@ export function Clients() {
         </div>
 
         <ul className="mt-12 grid w-full grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:gap-5">
-          {clients.list.map((client, i) => (
+          {clientsList.map((client, i) => (
             <motion.li
               key={client.name}
               initial={{ opacity: 0, y: 20 }}
@@ -86,7 +89,7 @@ export function Clients() {
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.6, delay: i * 0.08 }}
               className={`group relative aspect-[4/3] overflow-hidden rounded-xl border border-white/10 bg-ink-deep transition-colors hover:border-gold-300/30 sm:aspect-[5/3] ${
-                clients.list.length % 3 === 2 && i === clients.list.length - 2
+                clientsList.length % 3 === 2 && i === clientsList.length - 2
                   ? "sm:col-start-2"
                   : ""
               }`}

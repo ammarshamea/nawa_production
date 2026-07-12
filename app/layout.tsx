@@ -2,8 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Montserrat, Tajawal, IBM_Plex_Sans_Arabic } from "next/font/google";
 import { SmoothScrollProvider } from "@/components/motion/SmoothScrollProvider";
 import { ScrollAnchor } from "@/components/motion/ScrollAnchor";
+import { LanguageProvider } from "@/lib/i18n/LanguageProvider";
 import { Nav } from "@/components/Nav";
-import { brand } from "@/lib/content";
+import { en } from "@/lib/locales/en";
 import { assetPath } from "@/lib/assetPath";
 import "./globals.css";
 
@@ -36,22 +37,22 @@ const bodyAr = IBM_Plex_Sans_Arabic({
 });
 
 export const metadata: Metadata = {
-  title: `${brand.name} — ${brand.tagline.en}`,
+  title: `${en.brand.name} — ${en.brand.tagline}`,
   description:
     "A Saudi-American production house built on relentless craft, discipline, and cinematic ambition — executing scripts and creative direction into finished film, photography, and content at the highest standard.",
-  metadataBase: new URL(`https://${brand.website}`),
+  metadataBase: new URL(`https://${en.brand.website}`),
   openGraph: {
-    title: `${brand.name} — ${brand.tagline.en}`,
+    title: `${en.brand.name} — ${en.brand.tagline}`,
     description:
       "Saudi-American production house. Film & commercial production, live events, post production, and AI-powered production.",
-    url: `https://${brand.website}`,
-    siteName: brand.name,
+    url: `https://${en.brand.website}`,
+    siteName: en.brand.name,
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: `${brand.name} — ${brand.tagline.en}`,
+    title: `${en.brand.name} — ${en.brand.tagline}`,
     description:
       "Saudi-American production house. Film & commercial production, live events, post production, and AI-powered production.",
   },
@@ -82,14 +83,16 @@ export default function RootLayout({
       <body className="font-sans" suppressHydrationWarning>
         <script
           dangerouslySetInnerHTML={{
-            __html: "history.scrollRestoration='manual';window.scrollTo(0,0);",
+            __html: `(function(){history.scrollRestoration='manual';window.scrollTo(0,0);try{var l=localStorage.getItem('nawa-locale');if(l==='ar'){document.documentElement.lang='ar';document.documentElement.dir='rtl';document.body.dataset.locale='ar';}}catch(e){}})();`,
           }}
         />
-        <SmoothScrollProvider>
-          <ScrollAnchor />
-          <Nav />
-          {children}
-        </SmoothScrollProvider>
+        <LanguageProvider>
+          <SmoothScrollProvider>
+            <ScrollAnchor />
+            <Nav />
+            {children}
+          </SmoothScrollProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

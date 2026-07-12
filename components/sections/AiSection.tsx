@@ -3,13 +3,15 @@
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { ai } from "@/lib/content";
-import { siteImages } from "@/lib/assets";
+import { useContent, useLanguage } from "@/lib/i18n/LanguageProvider";
 import { assetPath } from "@/lib/assetPath";
 import { Reveal } from "@/components/motion/Reveal";
 import { SectionWatermark } from "@/components/SectionWatermark";
 
 export function AiSection() {
+  const { services } = useContent();
+  const { isRtl } = useLanguage();
+  const ai = services.items[3];
   const ref = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -26,7 +28,7 @@ export function AiSection() {
       <SectionWatermark position="right" />
       <motion.div style={{ y }} className="absolute inset-0 -z-10">
         <Image
-          src={assetPath(siteImages.journey.aiProduction)}
+          src={assetPath(ai.image)}
           alt=""
           fill
           className="object-cover object-center opacity-40"
@@ -40,48 +42,48 @@ export function AiSection() {
       <div className="relative z-10 mx-auto grid max-w-7xl gap-10 px-5 sm:px-6 lg:gap-16 lg:grid-cols-12">
         <div className="lg:col-span-5">
           <Reveal>
-            <p className="text-xs uppercase tracking-[0.32em] text-gold-200/80">Innovation</p>
+            <p className="text-xs uppercase tracking-[0.32em] text-gold-200/80">
+              {isRtl ? "الابتكار" : "Innovation"}
+            </p>
           </Reveal>
           <Reveal delay={0.05}>
             <h2 className="mt-5 font-display text-4xl leading-[1] text-white sm:text-5xl md:text-6xl lg:text-7xl">
-              AI-Powered
-              <br />
-              <span className="bg-gold-sheen bg-clip-text italic text-transparent">
-                Production
-              </span>
+              {ai.title}
             </h2>
           </Reveal>
           <Reveal delay={0.15}>
-            <p className="mt-8 text-base leading-[1.7] text-white/80 md:text-lg">{ai.intro}</p>
+            <p className="mt-8 text-base leading-[1.7] text-white/80 md:text-lg">{ai.body}</p>
           </Reveal>
         </div>
 
         <div className="lg:col-span-6 lg:col-start-7">
           <Reveal>
             <p className="text-xs uppercase tracking-[0.32em] text-gold-200/80">
-              This means we can
+              {ai.bulletsIntro}
             </p>
           </Reveal>
           <ul className="mt-8 space-y-6">
-            {ai.capabilities.map((cap, i) => (
+            {ai.bullets?.map((cap, i) => (
               <motion.li
                 key={i}
-                initial={{ opacity: 0, x: 24 }}
+                initial={{ opacity: 0, x: isRtl ? -24 : 24 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.7, delay: i * 0.08, ease: [0.2, 0.7, 0.2, 1] }}
-                className="border-l border-gold-300/30 pl-6"
+                className="border-s border-gold-300/30 ps-6"
               >
                 <p className="text-base leading-relaxed text-white/80">{cap}</p>
               </motion.li>
             ))}
           </ul>
 
-          <Reveal delay={0.2}>
-            <p className="mt-12 border-t border-gold-300/20 pt-8 text-lg italic leading-relaxed text-gold-100 md:text-xl">
-              {ai.closing}
-            </p>
-          </Reveal>
+          {ai.closing && (
+            <Reveal delay={0.2}>
+              <p className="mt-12 border-t border-gold-300/20 pt-8 text-lg italic leading-relaxed text-gold-100 md:text-xl">
+                {ai.closing}
+              </p>
+            </Reveal>
+          )}
         </div>
       </div>
     </section>
