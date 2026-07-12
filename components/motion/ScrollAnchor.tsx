@@ -3,20 +3,16 @@
 import { useLayoutEffect } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-/** Re-anchor scroll after dynamic sections (e.g. Process pin) mount so reload stays at hero. */
+/** Refresh ScrollTrigger after pin sections mount — only anchor to top on a fresh load. */
 export function ScrollAnchor() {
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
 
-    const reset = () => {
+    if (window.scrollY === 0 && !window.location.hash) {
       window.scrollTo(0, 0);
-      ScrollTrigger.refresh();
-    };
+    }
 
-    reset();
-    const t = window.setTimeout(reset, 0);
-
-    return () => window.clearTimeout(t);
+    ScrollTrigger.refresh();
   }, []);
 
   return null;

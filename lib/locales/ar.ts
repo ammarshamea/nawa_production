@@ -8,7 +8,6 @@ export const ar: LocaleContent = {
     email: "info@nawaproduction.com",
     website: "nawaproduction.com",
     location: "الرياض، المملكة العربية السعودية",
-    whatsapp: "متوفرون على واتساب",
   },
   nav: [
     { id: "home", label: "الرئيسية" },
@@ -195,7 +194,6 @@ export const ar: LocaleContent = {
       { label: "البريد الإلكتروني", value: "info@nawaproduction.com", href: "mailto:info@nawaproduction.com" },
       { label: "الموقع الإلكتروني", value: "nawaproduction.com", href: "https://nawaproduction.com" },
       { label: "العنوان", value: "الرياض، المملكة العربية السعودية", href: "" },
-      { label: "واتساب", value: "متوفرون على واتساب", href: "" },
     ],
     image: siteImages.journey.delivery,
   },

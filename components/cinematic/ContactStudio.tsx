@@ -48,7 +48,7 @@ export function ContactStudio() {
           </Link>
         </div>
 
-        <ul className="mt-12 grid gap-px overflow-hidden rounded-xl border border-white/10 bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-12 grid gap-px overflow-hidden rounded-xl border border-white/10 bg-white/5 sm:grid-cols-2 lg:grid-cols-3">
           {contact.items.map((item) => (
             <li key={item.label} className="bg-black/80 p-5 backdrop-blur-sm">
               <p className="text-[10px] uppercase tracking-[0.28em] text-studio-gold/70">{item.label}</p>

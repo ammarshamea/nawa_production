@@ -8,7 +8,6 @@ export const en: LocaleContent = {
     email: "info@nawaproduction.com",
     website: "nawaproduction.com",
     location: "Riyadh, Saudi Arabia",
-    whatsapp: "Available on WhatsApp",
   },
   nav: [
     { id: "home", label: "Home" },
@@ -197,7 +196,6 @@ export const en: LocaleContent = {
       { label: "Email", value: "info@nawaproduction.com", href: "mailto:info@nawaproduction.com" },
       { label: "Website", value: "nawaproduction.com", href: "https://nawaproduction.com" },
       { label: "Location", value: "Riyadh, Saudi Arabia", href: "" },
-      { label: "WhatsApp", value: "Available on WhatsApp", href: "" },
     ],
     image: siteImages.journey.delivery,
   },

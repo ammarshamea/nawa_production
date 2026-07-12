@@ -64,19 +64,17 @@ export function Clients() {
     <section id="clients" className="relative overflow-hidden bg-ink-deep py-24 md:py-32 lg:py-40">
       <SectionWatermark position="right" />
       <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-6">
-        <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
-          <div>
-            <Reveal>
-              <p className="text-xs uppercase tracking-[0.32em] text-gold-200/80">{clients.label}</p>
-            </Reveal>
-            <Reveal delay={0.05}>
-              <h2 className="mt-5 max-w-2xl font-display text-4xl leading-[1] text-white sm:text-5xl md:text-6xl">
-                {clients.title}
-              </h2>
-            </Reveal>
-          </div>
+        <div className="max-w-2xl">
+          <Reveal>
+            <p className="text-xs uppercase tracking-[0.32em] text-gold-200/80">{clients.label}</p>
+          </Reveal>
+          <Reveal delay={0.05}>
+            <h2 className="mt-5 font-display text-4xl leading-[1] text-white sm:text-5xl md:text-6xl">
+              {clients.title}
+            </h2>
+          </Reveal>
           <Reveal delay={0.15}>
-            <p className="max-w-md text-sm leading-relaxed text-white/60">{clients.body}</p>
+            <p className="mt-6 text-sm leading-relaxed text-white/60">{clients.body}</p>
           </Reveal>
         </div>
 

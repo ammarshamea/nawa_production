@@ -43,7 +43,6 @@ export type LocaleContent = {
     email: string;
     website: string;
     location: string;
-    whatsapp: string;
   };
   nav: NavItem[];
   hero: {

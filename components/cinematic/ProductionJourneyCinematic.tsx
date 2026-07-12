@@ -6,7 +6,10 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useContent, useLanguage } from "@/lib/i18n/LanguageProvider";
 import { assetPath } from "@/lib/assetPath";
-import { LOCALE_CHANGE_EVENT } from "@/lib/i18n/scrollSync";
+import {
+  LOCALE_CHANGE_EVENT,
+  refreshScrollTriggersPreservingPosition,
+} from "@/lib/i18n/scrollSync";
 import {
   crossfadeStage,
   sceneCameraMoveMobile,
@@ -35,6 +38,8 @@ export function ProductionJourneyCinematic() {
   const { isRtl } = useLanguage();
   const { stages, sectionTitle, sectionHeadline, sectionIntro } = process;
   const stageSignature = useMemo(() => stages.map((stage) => stage.id).join("|"), [stages]);
+  const stagesRef = useRef(stages);
+  stagesRef.current = stages;
   const sectionRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -48,7 +53,7 @@ export function ProductionJourneyCinematic() {
 
     gsap.registerPlugin(ScrollTrigger);
 
-    const count = stages.length;
+    const count = stagesRef.current.length;
     const totalUnits = count + DELIVERY_HOLD - 1;
     setSectionHeight(`${sectionHeightUnits(totalUnits)}vh`);
 
@@ -57,7 +62,7 @@ export function ProductionJourneyCinematic() {
     const initialScale = 1;
 
     const ctx = gsap.context(() => {
-      stages.forEach((_, i) => {
+      stagesRef.current.forEach((_, i) => {
         const layer = layerRefs.current[i];
         const camera = cameraRefs.current[i];
         const panel = panelRefs.current[i];
@@ -100,7 +105,7 @@ export function ProductionJourneyCinematic() {
         master.to(headerRef.current, { opacity: 0, y: -12, duration: 0.2, ease: "power2.inOut" }, 0.06);
       }
 
-      applyCamera(master, cameraRefs.current[0]!, stages[0].motionKey, 0, 1);
+      applyCamera(master, cameraRefs.current[0]!, stagesRef.current[0].motionKey, 0, 1);
 
       for (let i = 1; i < count; i++) {
         const prevLayer = layerRefs.current[i - 1];
@@ -117,22 +122,19 @@ export function ProductionJourneyCinematic() {
         master.set(camera, { scale: initialScale, x: "0%", y: "0%", force3D: true }, t);
 
         const sceneDuration = i === count - 1 ? 1 + DELIVERY_HOLD : 1;
-        applyCamera(master, camera, stages[i].motionKey, t, sceneDuration);
+        applyCamera(master, camera, stagesRef.current[i].motionKey, t, sceneDuration);
       }
     }, sectionRef);
 
-    if (!window.location.hash) {
-      window.scrollTo(0, 0);
-      ScrollTrigger.refresh();
-    }
+    ScrollTrigger.refresh();
 
     const refresh = () => {
       setSectionHeight(`${sectionHeightUnits(totalUnits)}vh`);
-      ScrollTrigger.refresh();
+      refreshScrollTriggersPreservingPosition(true);
     };
 
     const onLocaleChange = () => {
-      requestAnimationFrame(() => ScrollTrigger.refresh(true));
+      requestAnimationFrame(() => refreshScrollTriggersPreservingPosition(true));
     };
 
     window.addEventListener("resize", refresh);
@@ -145,7 +147,7 @@ export function ProductionJourneyCinematic() {
       window.removeEventListener(LOCALE_CHANGE_EVENT, onLocaleChange);
       ctx.revert();
     };
-  }, [stageSignature, stages]);
+  }, [stageSignature]);
 
   return (
     <section

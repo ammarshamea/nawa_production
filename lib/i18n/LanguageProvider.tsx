@@ -38,7 +38,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     const initial = stored === "ar" ? "ar" : "en";
     setLocaleState(initial);
     applyDocumentLocale(initial);
-    requestAnimationFrame(() => notifyLocaleChange());
+    if (initial !== "en") {
+      requestAnimationFrame(() => notifyLocaleChange());
+    }
   }, []);
 
   const setLocale = useCallback((next: Locale) => {

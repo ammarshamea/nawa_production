@@ -5,7 +5,10 @@ import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { scrollToSection } from "@/lib/assetPath";
-import { LOCALE_CHANGE_EVENT } from "@/lib/i18n/scrollSync";
+import {
+  LOCALE_CHANGE_EVENT,
+  refreshScrollTriggersPreservingPosition,
+} from "@/lib/i18n/scrollSync";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -25,15 +28,19 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
     if ("scrollRestoration" in history) {
       history.scrollRestoration = "manual";
     }
-    resetScrollPosition();
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     if (reduce) {
+      if (window.scrollY === 0) {
+        resetScrollPosition();
+      }
+
       const onLocaleChange = () => {
-        requestAnimationFrame(() => ScrollTrigger.refresh(true));
+        requestAnimationFrame(() => refreshScrollTriggersPreservingPosition(true));
       };
       window.addEventListener(LOCALE_CHANGE_EVENT, onLocaleChange);
-      requestAnimationFrame(() => ScrollTrigger.refresh(true));
+      requestAnimationFrame(() => refreshScrollTriggersPreservingPosition(true));
       return () => window.removeEventListener(LOCALE_CHANGE_EVENT, onLocaleChange);
     }
 
@@ -47,7 +54,9 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
       anchors: false,
     });
 
-    resetScrollPosition(lenis);
+    if (window.scrollY === 0) {
+      resetScrollPosition(lenis);
+    }
 
     function onGsapTick(time: number) {
       lenis.raf(time * 1000);
@@ -79,27 +88,38 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
     window.addEventListener("resize", onResize);
     document.addEventListener("click", onAnchorClick);
 
-    const stabilizeScroll = () => {
+    const onLoad = () => {
+      if (window.scrollY > 0) {
+        lenis.resize();
+        refreshScrollTriggersPreservingPosition(true);
+        return;
+      }
       resetScrollPosition(lenis);
       ScrollTrigger.refresh();
-      requestAnimationFrame(() => resetScrollPosition(lenis));
     };
 
-    stabilizeScroll();
-    window.addEventListener("load", stabilizeScroll);
+    if (document.readyState === "complete") {
+      onLoad();
+    } else {
+      window.addEventListener("load", onLoad);
+    }
 
     const onLocaleChange = () => {
+      const scrollY = window.scrollY;
       lenis.resize();
       requestAnimationFrame(() => {
-        ScrollTrigger.refresh(true);
+        refreshScrollTriggersPreservingPosition(true);
         lenis.resize();
+        if (scrollY > 0) {
+          lenis.scrollTo(scrollY, { immediate: true });
+        }
       });
     };
     window.addEventListener(LOCALE_CHANGE_EVENT, onLocaleChange);
 
     return () => {
       window.removeEventListener("resize", onResize);
-      window.removeEventListener("load", stabilizeScroll);
+      window.removeEventListener("load", onLoad);
       window.removeEventListener(LOCALE_CHANGE_EVENT, onLocaleChange);
       document.removeEventListener("click", onAnchorClick);
       gsap.ticker.remove(onGsapTick);
