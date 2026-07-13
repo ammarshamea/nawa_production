@@ -43,7 +43,7 @@ export const projects: ProjectItem[] = [
   },
   {
     id: "tanmia",
-    title: { en: "Social Development Bank — Film", ar: "بنك التنمية للفيديو" },
+    title: { en: "Social Development Bank", ar: "بنك التنمية" },
     category: { en: "Corporate Film", ar: "فيلم مؤسسي" },
     driveId: "1czhLbCfnZe67AAHFTz4M5MjrkeQ_8sJT",
   },
