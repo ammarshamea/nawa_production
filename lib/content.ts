@@ -1,10 +1,22 @@
 import type { ClientItem } from "./locales/shared";
 import type { ProcessStage } from "./locales/types";
+import type { Locale } from "./locales/types";
 import { siteImages } from "./assets";
 
 export type { ClientItem };
 export type { Locale, LocaleContent, ProcessStage } from "./locales/types";
 export type JourneyStage = ProcessStage;
+
+export type ProjectItem = {
+  id: string;
+  title: { en: string; ar: string };
+  category: { en: string; ar: string };
+  driveId: string;
+};
+
+export function projectText(project: ProjectItem, locale: Locale, field: "title" | "category") {
+  return project[field][locale];
+}
 
 /** Shared client logos — names are brand names, not translated */
 export const clientsList: ClientItem[] = [
@@ -22,26 +34,26 @@ export const clientsList: ClientItem[] = [
   { name: "Ghomd" },
 ];
 
-export const projects = [
+export const projects: ProjectItem[] = [
   {
     id: "alrajhi",
-    title: "Al Rajhi Bank",
-    category: "Commercial",
-    driveId: "17NudGWhWQQS6BrzPKIXQ9lAbann900aW",
+    title: { en: "Al Rajhi Business", ar: "الراجحي للاعمال" },
+    category: { en: "Commercial", ar: "إعلان" },
+    driveId: "1aio5EQK_HWVUvc-NbfgmDQgCi4Tlu_Fx",
   },
   {
     id: "tanmia",
-    title: "Social Development Bank",
-    category: "Corporate Film",
-    driveId: "1OJ7UHtCykwh5mRHnm-mm_BzesuD5g2yI",
+    title: { en: "Social Development Bank — Film", ar: "بنك التنمية للفيديو" },
+    category: { en: "Corporate Film", ar: "فيلم مؤسسي" },
+    driveId: "1czhLbCfnZe67AAHFTz4M5MjrkeQ_8sJT",
   },
   {
     id: "hena",
-    title: "Hena Talga Joak",
-    category: "Campaign",
-    driveId: "12pwlLcp6eqKcvL7YhEhGaoTCvxq6f_i7",
+    title: { en: "Hena Talga Joak", ar: "هنا تلقى جوك" },
+    category: { en: "Campaign", ar: "حملة" },
+    driveId: "1u-U7orWRSSmD1G5XU3IMezP9m7hDT2Ho",
   },
-] as const;
+];
 
 /** @deprecated — use useContent() from LanguageProvider */
 export { en as defaultLocalePreview } from "./locales/en";

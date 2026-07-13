@@ -4,7 +4,7 @@ export function drivePreviewUrl(driveId: string) {
   return `https://drive.google.com/file/d/${driveId}/preview`;
 }
 
-/** Thumbnail from Drive (frame from video — usually early in the timeline) */
+/** Static poster URLs — Drive-generated frame (usually early in the video) */
 export function driveThumbnailUrls(driveId: string): string[] {
   return [
     `https://drive.google.com/thumbnail?id=${driveId}&sz=w1280-h720`,
@@ -14,7 +14,15 @@ export function driveThumbnailUrls(driveId: string): string[] {
   ];
 }
 
-/** Direct download / stream URL (works when file is link-shared) */
+/** Direct download / stream URLs for off-screen frame capture */
+export function driveVideoStreamUrls(driveId: string): string[] {
+  return [
+    `https://drive.google.com/uc?export=download&id=${driveId}&confirm=t`,
+    `https://drive.google.com/uc?export=download&id=${driveId}`,
+  ];
+}
+
+/** @deprecated Use driveVideoStreamUrls */
 export function driveVideoStreamUrl(driveId: string) {
-  return `https://drive.google.com/uc?export=download&id=${driveId}`;
+  return driveVideoStreamUrls(driveId)[0];
 }

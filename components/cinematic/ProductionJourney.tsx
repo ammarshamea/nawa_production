@@ -1,7 +1,7 @@
 "use client";
 
+import { ProductionJourneyHorizontal } from "@/components/cinematic/ProductionJourneyHorizontal";
 import { ProductionJourneyLanding } from "@/components/cinematic/ProductionJourneyLanding";
-import { ProductionJourneyCinematic } from "@/components/cinematic/ProductionJourneyCinematic";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 export function ProductionJourney() {
@@ -11,5 +11,5 @@ export function ProductionJourney() {
     return <ProductionJourneyLanding />;
   }
 
-  return <ProductionJourneyCinematic />;
+  return <ProductionJourneyHorizontal />;
 }

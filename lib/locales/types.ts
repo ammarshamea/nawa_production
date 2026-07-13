@@ -111,8 +111,16 @@ export type LocaleContent = {
     title: string;
     body: string;
     closing: string;
-    ctaPrimary: { label: string; href: string };
     ctaSecondary: { label: string; href: string };
+    form: {
+      nameLabel: string;
+      namePlaceholder: string;
+      emailLabel: string;
+      emailPlaceholder: string;
+      messageLabel: string;
+      messagePlaceholder: string;
+      submit: string;
+    };
     items: ContactItem[];
     image: string;
   };

@@ -38,9 +38,6 @@ export function Contact() {
         </Reveal>
         <Reveal delay={0.25}>
           <div className="mt-12 flex flex-wrap justify-center gap-5">
-            <MagneticButton href={contact.ctaPrimary.href} variant="primary">
-              {contact.ctaPrimary.label}
-            </MagneticButton>
             <MagneticButton href={contact.ctaSecondary.href} variant="secondary">
               {contact.ctaSecondary.label}
             </MagneticButton>
