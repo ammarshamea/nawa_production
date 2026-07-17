@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { driveThumbnailUrls, driveVideoStreamUrls } from "@/lib/drive";
+import { useEffect, useRef, useState } from "react";
+import { driveThumbnailUrls } from "@/lib/drive";
 
 type Props = {
   driveId: string;
@@ -9,158 +9,69 @@ type Props = {
   priority?: boolean;
 };
 
-function captureFrameFromVideo(video: HTMLVideoElement): string | null {
-  const w = video.videoWidth;
-  const h = video.videoHeight;
-  if (!w || !h) return null;
-
-  const canvas = document.createElement("canvas");
-  canvas.width = w;
-  canvas.height = h;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return null;
-
-  try {
-    ctx.drawImage(video, 0, 0, w, h);
-    return canvas.toDataURL("image/jpeg", 0.85);
-  } catch {
-    return null;
-  }
-}
-
-/** Captures ~1s into the video as a static JPEG (hidden video element). */
-function useVideoPoster(driveId: string) {
-  const [poster, setPoster] = useState<string | null>(null);
-
-  useEffect(() => {
-    setPoster(null);
-
-    const streams = driveVideoStreamUrls(driveId);
-    let streamIndex = 0;
-    let cancelled = false;
-
-    const video = document.createElement("video");
-    video.muted = true;
-    video.playsInline = true;
-    video.preload = "auto";
-    video.crossOrigin = "anonymous";
-
-    const cleanup = () => {
-      video.removeAttribute("src");
-      video.load();
-    };
-
-    const tryNextStream = () => {
-      if (cancelled || streamIndex >= streams.length) return;
-
-      video.src = streams[streamIndex];
-      streamIndex += 1;
-    };
-
-    const onSeeked = () => {
-      if (cancelled) return;
-      const frame = captureFrameFromVideo(video);
-      if (frame) {
-        setPoster(frame);
-        cleanup();
-        return;
-      }
-      tryNextStream();
-    };
-
-    const onLoaded = () => {
-      if (cancelled) return;
-      try {
-        const target = video.duration > 0 ? Math.min(1, video.duration * 0.05) : 0.5;
-        video.currentTime = target;
-      } catch {
-        const frame = captureFrameFromVideo(video);
-        if (frame) {
-          setPoster(frame);
-          cleanup();
-        } else {
-          tryNextStream();
-        }
-      }
-    };
-
-    const onError = () => {
-      if (!cancelled) tryNextStream();
-    };
-
-    video.addEventListener("seeked", onSeeked);
-    video.addEventListener("loadeddata", onLoaded);
-    video.addEventListener("error", onError);
-
-    const timeout = window.setTimeout(() => {
-      if (!cancelled) cleanup();
-    }, 18000);
-
-    tryNextStream();
-
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timeout);
-      video.removeEventListener("seeked", onSeeked);
-      video.removeEventListener("loadeddata", onLoaded);
-      video.removeEventListener("error", onError);
-      cleanup();
-    };
-  }, [driveId]);
-
-  return poster;
-}
-
 export function ProjectThumbnail({ driveId, title, priority }: Props) {
   const sources = driveThumbnailUrls(driveId);
-  const capturedPoster = useVideoPoster(driveId);
-
+  const [inView, setInView] = useState(priority ?? false);
   const [thumbIndex, setThumbIndex] = useState(0);
-  const [thumbSrc, setThumbSrc] = useState<string | null>(null);
+  const [failed, setFailed] = useState(false);
 
-  const posterSrc = capturedPoster ?? thumbSrc;
-  const isLoading = !posterSrc;
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (inView) return;
+
+    const node = rootRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "120px", threshold: 0.01 },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [inView]);
 
   function handleThumbError() {
     if (thumbIndex < sources.length - 1) {
       setThumbIndex((i) => i + 1);
+    } else {
+      setFailed(true);
     }
   }
 
+  const thumbSrc = inView && !failed ? sources[thumbIndex] : null;
+
   return (
-    <div className="relative aspect-video w-full overflow-hidden bg-ink-soft">
-      {isLoading && (
+    <div ref={rootRef} className="relative aspect-video w-full overflow-hidden bg-ink-soft">
+      {!thumbSrc && (
         <div
           className="absolute inset-0 animate-pulse bg-gradient-to-br from-plum-900/50 via-ink-soft to-ink-deep"
           aria-hidden
         />
       )}
 
-      {!capturedPoster && thumbIndex < sources.length && (
+      {thumbSrc ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          key={sources[thumbIndex]}
-          src={sources[thumbIndex]}
-          alt=""
-          aria-hidden
-          loading={priority ? "eager" : "lazy"}
-          decoding="async"
-          referrerPolicy="no-referrer"
-          onLoad={() => setThumbSrc(sources[thumbIndex])}
-          onError={handleThumbError}
-          className="hidden"
-        />
-      )}
-
-      {posterSrc ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={posterSrc}
+          key={thumbSrc}
+          src={thumbSrc}
           alt={title}
           loading={priority ? "eager" : "lazy"}
           decoding="async"
+          referrerPolicy="no-referrer"
+          onError={handleThumbError}
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
+      ) : failed ? (
+        <span className="absolute inset-0 flex items-center justify-center px-4 text-center text-sm text-white/50">
+          {title}
+        </span>
       ) : null}
 
       <div className="absolute inset-0 bg-ink-deep/25 transition-opacity duration-500 group-hover:bg-ink-deep/10" />

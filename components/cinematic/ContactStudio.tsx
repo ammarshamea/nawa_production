@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useContent, useLanguage } from "@/lib/i18n/LanguageProvider";
 import { assetPath, sectionHref } from "@/lib/assetPath";
-import { FilmGrain } from "@/components/cinematic/FilmGrain";
 import { ContactForm } from "@/components/cinematic/ContactForm";
 
 function MailIcon() {
@@ -34,22 +33,25 @@ export function ContactStudio() {
       dir={isRtl ? "rtl" : "ltr"}
       className="relative overflow-hidden bg-black py-24 md:py-32 lg:py-40"
     >
-      <div className="pointer-events-none absolute inset-0">
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ contain: "strict", transform: "translateZ(0)" }}
+      >
         <Image
           src={assetPath(contact.image)}
           alt=""
           fill
-          loading="lazy"
+          priority
+          quality={75}
           className="object-contain object-center opacity-50 md:object-cover"
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/40" />
-        <FilmGrain />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-12">
         <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-16 xl:gap-20">
-          <div className="lg:col-span-5 lg:sticky lg:top-28">
+          <div className="lg:col-span-5">
             <p className="text-[10px] uppercase tracking-[0.35em] text-studio-gold">{contact.label}</p>
 
             <h2 className="mt-5 font-display text-4xl leading-[1.02] text-studio-white sm:text-5xl md:text-6xl lg:text-[4.25rem]">

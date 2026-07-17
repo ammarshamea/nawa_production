@@ -14,15 +14,14 @@ export function driveThumbnailUrls(driveId: string): string[] {
   ];
 }
 
-/** Direct download / stream URLs for off-screen frame capture */
-export function driveVideoStreamUrls(driveId: string): string[] {
+/** High-resolution logo URLs for client marks */
+export function driveLogoUrls(driveId: string): string[] {
   return [
-    `https://drive.google.com/uc?export=download&id=${driveId}&confirm=t`,
-    `https://drive.google.com/uc?export=download&id=${driveId}`,
+    `https://lh3.googleusercontent.com/d/${driveId}=w1920-rw`,
+    `https://drive.google.com/thumbnail?id=${driveId}&sz=w1920`,
+    `https://drive.google.com/thumbnail?id=${driveId}&sz=w1280-h720`,
+    `https://drive.google.com/uc?export=view&id=${driveId}`,
+    `https://drive.google.com/thumbnail?id=${driveId}&sz=w800-h600`,
   ];
 }
 
-/** @deprecated Use driveVideoStreamUrls */
-export function driveVideoStreamUrl(driveId: string) {
-  return driveVideoStreamUrls(driveId)[0];
-}

@@ -29,7 +29,7 @@ export function ContactForm() {
     <form
       onSubmit={handleSubmit}
       dir={isRtl ? "rtl" : "ltr"}
-      className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/50 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-md md:p-10"
+      className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/75 p-6 md:p-10"
     >
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-studio-gold/50 to-transparent"
