@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const isGithubPages = process.env.GITHUB_PAGES === "true";
+const isStaticExport = process.env.STATIC_EXPORT === "true";
+const isExport = isGithubPages || isStaticExport;
 const githubBasePath = isGithubPages ? "/nawa_production" : "";
 
 const nextConfig = {
@@ -7,16 +9,20 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_BASE_PATH: githubBasePath,
   },
-  ...(isGithubPages
+  ...(isExport
     ? {
         output: "export",
-        basePath: githubBasePath,
-        assetPrefix: `${githubBasePath}/`,
+        ...(isGithubPages
+          ? {
+              basePath: githubBasePath,
+              assetPrefix: `${githubBasePath}/`,
+            }
+          : {}),
         trailingSlash: true,
       }
     : {}),
   images: {
-    unoptimized: isGithubPages,
+    unoptimized: isExport,
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
