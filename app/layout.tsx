@@ -4,6 +4,7 @@ import { SmoothScrollProvider } from "@/components/motion/SmoothScrollProvider";
 import { ScrollAnchor } from "@/components/motion/ScrollAnchor";
 import { LanguageProvider } from "@/lib/i18n/LanguageProvider";
 import { Nav } from "@/components/Nav";
+import { RegisterServiceWorker } from "@/components/RegisterServiceWorker";
 import { en } from "@/lib/locales/en";
 import { assetPath } from "@/lib/assetPath";
 import "./globals.css";
@@ -90,6 +91,7 @@ export default function RootLayout({
           <SmoothScrollProvider>
             <ScrollAnchor />
             <Nav />
+            <RegisterServiceWorker />
             {children}
           </SmoothScrollProvider>
         </LanguageProvider>

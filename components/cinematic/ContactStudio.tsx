@@ -111,7 +111,7 @@ export function ContactStudio() {
 
         <footer className="mt-16 flex flex-col items-center gap-5 border-t border-white/10 pt-12 md:mt-20">
           <Image
-            src={assetPath("/assets/brand/logo-nawa-gold.png")}
+            src={assetPath("/assets/brand/logo-nawa-gold.webp")}
             alt={brand.name}
             width={120}
             height={48}

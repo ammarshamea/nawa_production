@@ -22,7 +22,7 @@ export function SectionWatermark({ position = "center", className = "" }: Props)
       aria-hidden
     >
       <Image
-        src={assetPath("/assets/brand/logo-nawa-gold.png")}
+        src={assetPath("/assets/brand/logo-nawa-gold.webp")}
         alt=""
         width={800}
         height={428}

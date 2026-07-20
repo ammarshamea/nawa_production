@@ -62,7 +62,7 @@ export function Nav() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-6 sm:py-5 md:py-6">
         <a href={sectionHref("#home")} className="flex shrink-0 items-center gap-3" aria-label="Nawa Production home">
           <Image
-            src={assetPath("/assets/brand/logo-nawa-gold.png")}
+            src={assetPath("/assets/brand/logo-nawa-gold.webp")}
             alt="Nawa Production"
             width={120}
             height={48}

@@ -72,7 +72,7 @@ export function Contact() {
         <Reveal delay={0.3}>
           <div className="mt-14 flex flex-col items-center gap-6">
             <Image
-              src={assetPath("/assets/brand/logo-nawa-gold.png")}
+              src={assetPath("/assets/brand/logo-nawa-gold.webp")}
               alt="Nawa Production"
               width={140}
               height={70}

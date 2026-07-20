@@ -37,7 +37,7 @@ export function Preloader() {
             className="relative"
           >
             <Image
-              src={assetPath("/assets/brand/logo-nawa-gold.png")}
+              src={assetPath("/assets/brand/logo-nawa-gold.webp")}
               alt=""
               width={220}
               height={110}
